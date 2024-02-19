@@ -34,7 +34,7 @@ struct QueueView: View {
                 Button(action: {
                     viewModel.return_home()
                 }, label: {
-                    Text("Homee")
+                    Text("Home")
                         .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.height * 0.06, alignment: .center)
                         .background(newCustomColorsModel.colorSchemeThree)
                         .foregroundColor(newCustomColorsModel.customColor_1)
