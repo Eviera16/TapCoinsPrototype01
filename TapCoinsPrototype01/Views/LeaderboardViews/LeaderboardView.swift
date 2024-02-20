@@ -20,7 +20,7 @@ struct LeaderboardView: View {
                     Text("Leaderboards")
                         .font(.system(size: UIScreen.main.bounds.width * 0.06, weight: .semibold))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(newCustomColorsModel.customColor_2)
+                        .foregroundColor(newCustomColorsModel.customColor_1)
 //                    if sizeClass == .compact {
 //                        HStack{
 //                            Spacer()
