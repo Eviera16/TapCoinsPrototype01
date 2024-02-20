@@ -9,8 +9,6 @@ import Foundation
 import SwiftUI
 
 struct ProfileView: View {
-//    @Environment(\.presentationMode) var presentationMode
-//    @AppStorage("session") var logged_in_user: String?
     @AppStorage("num_friends") public var num_friends:Int?
     @AppStorage("darkMode") var darkMode: Bool?
     @StateObject private var viewModel = ProfileViewModel()
@@ -120,49 +118,10 @@ struct ProfileView: View {
                         }
                         .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.07)
                     }
-                    
-                    
-    //                        VStack(alignment: .trailing, spacing: 0.0){
-    //                            Text("Best Streak: " + String(viewModel.userModel.best_streak  ?? 0))
-    //                                .font(.system(size: UIScreen.main.bounds.width * 0.07))
-    //                                .frame(width: UIScreen.main.bounds.width * 0.6, height: UIScreen.main.bounds.height * 0.09, alignment: .center)
-    //                                .background(newCustomColorsModel.customColor_2)
-    //                                .foregroundColor(newCustomColorsModel.customColor_1)
-    //                                .border(newCustomColorsModel.customColor_1, width: UIScreen.main.bounds.width * 0.01)
-    //                            VStack{
-    //                                Text("Current Streak: " + String(viewModel.userModel.win_streak  ?? 0)).font(.system(size: UIScreen.main.bounds.width * 0.07))
-    ////                                Text("Time left: 1:42")
-    //                            }
-    //                            .frame(width: UIScreen.main.bounds.width * 0.6, height: UIScreen.main.bounds.height * 0.09, alignment: .center)
-    //                            .foregroundColor(newCustomColorsModel.customColor_1)
-    //                            .border(newCustomColorsModel.customColor_1, width: UIScreen.main.bounds.width * 0.01)
-    ////                            NavigationLink(destination: {
-    ////                                LeaderboardView()
-    ////                                    .navigationBarBackButtonHidden(true)
-    ////                                    .navigationBarItems(leading: RedBackButtonView())
-    ////                            }, label: {
-    ////                                HStack(spacing:0.0){
-    ////                                    Text("View LeaderBoard")
-    ////                                        .frame(width: UIScreen.main.bounds.width * 0.54, height: UIScreen.main.bounds.height * 0.02, alignment: .center)
-    ////                                        .background(newCustomColorsModel.customColor_1)
-    ////                                        .foregroundColor(newCustomColorsModel.customColor_3)
-    ////                                    Image(systemName: "tablecells.fill")
-    ////                                        .background(newCustomColorsModel.customColor_1)
-    ////                                        .foregroundColor(newCustomColorsModel.customColor_2)
-    ////                                }
-    ////                                .background(newCustomColorsModel.customColor_1)
-    ////                            })
-    //                        }
-    //                        .frame(width: UIScreen.main.bounds.width * 0.6, height: UIScreen.main.bounds.height * 0.2, alignment: .trailing)
                     Spacer()
                     BannerAd(unitID: "ca-app-pub-3940256099942544/2934735716") // Fake Ad Unit
                     Spacer()
                     HStack{
-    //                        VStack{
-    //                            LeaderboardView()
-    //                                .navigationBarBackButtonHidden(true)
-    //                        }
-    //                        .frame(width: UIScreen.main.bounds.width * 0.4, height: UIScreen.main.bounds.height * 0.2, alignment: .center)
                         VStack(alignment: .leading, spacing: 0.0){
                             HStack(alignment: .center, spacing: 0.0){
                                 Text("Friends: ")
@@ -225,61 +184,6 @@ struct ProfileView: View {
                             })
                         }.padding()
                     }
-                    
-    //                HStack(alignment: .center, spacing: UIScreen.main.bounds.width * 0.1){
-    //                    Text("Friends: " + String(viewModel.userModel.numFriends ?? 0))
-    //                        .font(.system(size: UIScreen.main.bounds.width * 0.05))
-    //                        .fontWeight(.bold)
-    //                        .foregroundColor(newCustomColorsModel.customColor_1)
-    //
-    //                    Button(action: {viewModel.showRequest = true}, label: {
-    //                        Text("Add Friend")
-    //                            .font(.system(size: UIScreen.main.bounds.width * 0.05))
-    //                            .fontWeight(.bold)
-    //                            .frame(width: UIScreen.main.bounds.height * 0.12, height: UIScreen.main.bounds.height * 0.02, alignment: .center)
-    //                            .background(newCustomColorsModel.customColor_1)
-    //                            .foregroundColor(newCustomColorsModel.customColor_2)
-    //                            .cornerRadius(10)
-    //                    })
-    //
-    //                    NavigationLink(destination: {
-    //                        FriendsView()
-    //                            .navigationBarBackButtonHidden(true)
-    //                            .navigationBarItems(leading: RedBackButtonView())
-    //                    }, label: {
-    //                        HStack{
-    //                            Text("View Friends")
-    //                                .font(.system(size: UIScreen.main.bounds.width * 0.05))
-    //                                .fontWeight(.bold)
-    //                            if viewModel.userModel.hasRQ ?? false{
-    //                                Text("!")
-    //                                    .font(.system(size: UIScreen.main.bounds.width * 0.03))
-    //                                    .fontWeight(.bold)
-    //                                    .frame(width: UIScreen.main.bounds.height * 0.12, height: UIScreen.main.bounds.height * 0.02, alignment: .center)
-    //                                    .background(newCustomColorsModel.customColor_2)
-    //                                    .foregroundColor(newCustomColorsModel.customColor_1)
-    //                                    .cornerRadius(30)
-    //                            }
-    //                            else if viewModel.userModel.hasGI ?? false{
-    //                                Text("!")
-    //                                    .font(.system(size: UIScreen.main.bounds.width * 0.03))
-    //                                    .fontWeight(.bold)
-    //                                    .frame(width: UIScreen.main.bounds.height * 0.02, height: UIScreen.main.bounds.height * 0.02, alignment: .center)
-    //                                    .background(newCustomColorsModel.customColor_2)
-    //                                    .foregroundColor(newCustomColorsModel.customColor_1)
-    //                                    .cornerRadius(30)
-    //                            }
-    //                        }
-    //                        .frame(width: UIScreen.main.bounds.height * 0.065, height: UIScreen.main.bounds.height * 0.04, alignment: .center)
-    //                        .background(newCustomColorsModel.customColor_1)
-    //                        .foregroundColor(newCustomColorsModel.customColor_2)
-    //                        .cornerRadius(10)
-    //                    })
-    //                }
-    //                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.1, alignment: .center)
-    //                .background(newCustomColorsModel.customColor_2)
-                    //May need to update this unitId BannerAd(unitID: "ca-app-pub-4507110298752888/4772121312")
-                    
                 }
                 if viewModel.showRequest{
                     HStack{
@@ -348,9 +252,6 @@ struct ProfileView: View {
                     .border(newCustomColorsModel.colorSchemeThree, width: UIScreen.main.bounds.width * 0.005)
                     .offset(x: 0, y: viewModel.smaller_screen ? -125 : -140)
                 }
-    //            BackButtonView(is_red: true)
-    //                .offset(x: UIScreen.main.bounds.width * -0.36, y: UIScreen.main.bounds.height * -0.4)
-            
             }
             else{
                 ProgressView()
@@ -358,8 +259,6 @@ struct ProfileView: View {
                     .scaleEffect(UIScreen.main.bounds.width * 0.01)
             }
         }
-        
-//        .onAppear { viewModel.getUser() }
     } //Some View
 } //View
 

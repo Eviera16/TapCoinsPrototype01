@@ -68,8 +68,6 @@ final class PGameViewModel: ObservableObject {
     private var hardTime = 0.12
     
     init(){
-        print("PGAME VALUE BELOW")
-        print(pGame)
         if UIScreen.main.bounds.height < 750.0{
             smaller_screen = true
         }
@@ -102,15 +100,12 @@ final class PGameViewModel: ObservableObject {
     func startGame(){
         gameStarted = true
         if (pGame! == "easy"){
-            print("IT IS EASY MODE")
             generate_index(wait:easyTime)
         }
         else if (pGame! == "medium"){
-            print("IT IS MEDIUM MODE")
             generate_index(wait:mediumTime)
         }
         else if (pGame! == "hard"){
-            print("IT IS HARD MODE")
             generate_index(wait:hardTime)
         }
         
@@ -127,11 +122,9 @@ final class PGameViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + wait) {
             let index = Int.random(in: 0..<self.opp_values.count)
             if self.check_index(_index:index){
-                print("GENERATED AN INDEX")
                 self.computer_tap(index: index)
             }
             else{
-                print("GENERATING ANOTHER INDEX")
                 self.generate_index(wait: 0.0)
             }
         }
@@ -146,9 +139,7 @@ final class PGameViewModel: ObservableObject {
     }
     
     func computer_tap(index:Int){
-        print("IN COMPUTER TAP")
         if (pGame == "easy"){
-            print("IS EASYZ MODE TAP")
             if (self.coin_values[opp_values[index]] == "Custom_Color_1_TC"){
                 self.coin_values[opp_values[index]] = "Custom_Color_2_TC"
                 self.sPoints = self.sPoints + 1
@@ -167,7 +158,6 @@ final class PGameViewModel: ObservableObject {
             }
         }
         else if (pGame == "medium"){
-            print("IS MEDIUM MODE TAP")
             if (self.coin_values[opp_values[index]] == "Custom_Color_1_TC"){
                 self.coin_values[opp_values[index]] = "Custom_Color_2_TC"
                 self.sPoints = self.sPoints + 1
@@ -186,7 +176,6 @@ final class PGameViewModel: ObservableObject {
             }
         }
         else if (pGame == "hard"){
-            print("IS HARD MODE TAP")
             if (self.coin_values[opp_values[index]] == "Custom_Color_1_TC"){
                 self.coin_values[opp_values[index]] = "Custom_Color_2_TC"
                 self.sPoints = self.sPoints + 1

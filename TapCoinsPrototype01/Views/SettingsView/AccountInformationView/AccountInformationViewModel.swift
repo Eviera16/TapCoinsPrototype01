@@ -60,22 +60,9 @@ final class AccountInformationViewModel: ObservableObject {
     
     init(){
         self.userData = UserViewModel(self.userViewModel ?? Data())
-        print("USER DATA IS BELOW")
-        print(self.userData)
-        print("SAVED PRESSED BELOW")
-        print(save_pressed)
         self.current_username = self.userData?.username ?? "None"
         self.setPageData(usersData: self.userData!)
         self.is_guest = self.userData?.is_guest ?? false
-//        if UIScreen.main.bounds.height < 750.0{
-//            smaller_screen = true
-//        }
-        print("OOOOOOOOOOOOOOOOOOOOOOOOO")
-        print("OOOOOOOOOOOOOOOOOOOOOOOOO")
-        print(confirmed_current_password)
-        print(is_guest)
-        print("OOOOOOOOOOOOOOOOOOOOOOOOO")
-        print("OOOOOOOOOOOOOOOOOOOOOOOOO")
     }
     
     func setPageData(usersData:UserViewModel){
@@ -121,29 +108,22 @@ final class AccountInformationViewModel: ObservableObject {
     }
     
     func save(){
-        print("IN SAVE FUNCTION")
         save_pressed = true
         gsave_pressed = true
         show_guest_message = false
         saved = false
         is_phone_error = false
         is_uName_error = false
-        print("AFTER BOOLEANS")
-        print(username)
-        print(userData?.username)
         if checkValuesChanged() == false{
             save_pressed = false
             gsave_pressed = false
             return
         }
         if check_errors_function(state: Error_States.Required, _phone_number: phone_number, uName: username) == false{
-            print("HIT CHECK ERRORS")
             save_pressed = false
             gsave_pressed = false
             return
         }
-        print("GOT PASSED CHECK ERRORS")
-        
         if phone_number != ""{
             if check_errors_function(state: Error_States.Invalid_Phone_Number, _phone_number: phone_number, uName: username) == false{
                 save_pressed = false
@@ -151,7 +131,6 @@ final class AccountInformationViewModel: ObservableObject {
                 return
             }
         }
-        print("GOT PAST PHONE NUMBER")
         var url_string:String = ""
         
         if debug ?? true{
@@ -159,6 +138,7 @@ final class AccountInformationViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/user/save"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/user/save"
         }
         
@@ -167,15 +147,12 @@ final class AccountInformationViewModel: ObservableObject {
             gsave_pressed = false
             return
         }
-        print("GOT THE URL")
         var request = URLRequest(url: url)
-        print("GOT THE REQUEST")
         guard let session = logged_in_user else{
             save_pressed = false
             gsave_pressed = false
             return
         }
-        print("GOT THE SESSION")
         var changed_username:Bool = false
         if (self.current_username != self.username){
             changed_username = true
@@ -202,15 +179,8 @@ final class AccountInformationViewModel: ObservableObject {
 
             DispatchQueue.main.async {
                 do {
-                    print("IN THE DO HERE NOW")
-                    print("**************************")
-                    print("**************************")
-                    print("**************************")
-                    print("**************************")
                     let response = try JSONDecoder().decode(Response2.self, from: data)
-                    print(response)
                     if response.response == "Invalid username."{
-                        print("INVALID USERNAME")
                         if self?.check_errors_function(state: Error_States.Invalid_Username, _phone_number: self?.phone_number ?? "", uName: self?.username ?? "") == false{
                             self?.save_pressed = false
                             self?.gsave_pressed = false
@@ -218,7 +188,6 @@ final class AccountInformationViewModel: ObservableObject {
                         }
                     }
                     else if response.response == "Successfully saved data."{
-                        print("SAVED SUCCESSFULLY")
                         self?.saved = true
                         self?.save_pressed = false
                         self?.gsave_pressed = false
@@ -232,25 +201,16 @@ final class AccountInformationViewModel: ObservableObject {
                         self?.userViewModel = self?.userData?.storageValue
                     }
                     else if response.response == "Guest"{
-                        print("IS A GUEST")
-                        print("IS A GUEST")
-                        print("IS A GUEST")
-                        print("IS A GUEST")
-                        print("IS A GUEST")
-                        print("IS A GUEST")
                         self?.saved = true
                         self?.save_pressed = false
                         self?.message = "Successfully saved data. You are still a guest, create a password to save your account"
                         self?.is_phone_error = false
                         self?.is_uName_error = false
                     }
-                    // save return value from get user
-//                    self?.getUser()
                     self?.loaded_get_user = false
                     DispatchQueue.main.async { [weak self] in
                         self?.globalFunctions.getUser(token:self?.logged_in_user ?? "None", this_user:nil, curr_user:nil)
                     }
-                    // set page data here
                     DispatchQueue.main.async { [weak self] in
                         self?.userData = UserViewModel(self?.userViewModel ?? Data())
                         self?.setPageData(usersData: (self?.userData)!)
@@ -258,7 +218,6 @@ final class AccountInformationViewModel: ObservableObject {
                 }
                 catch{
                     do {
-                        print("IS NOT SAVING CORRECTLY AND GETTING TO THIS ERROR PART")
                         let response2 = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
                         if self?.check_errors_function(state: Error_States.Invalid_Username, _phone_number: self?.phone_number ?? "", uName: self?.username ?? "") == false{
                             self?.save_pressed = false
@@ -273,7 +232,6 @@ final class AccountInformationViewModel: ObservableObject {
                         }
                     }
                     catch{
-                        print("IN THE CATCH HERE")
                         print(error)
                     }
                 }
@@ -284,12 +242,7 @@ final class AccountInformationViewModel: ObservableObject {
     }
     
     func check_errors_function(state:Error_States, _phone_number:String, uName:String) -> Bool{
-        print("UNAME IS BELOW")
-        print(uName)
         var result = globalFunctions.check_errors(state: state, _phone_number: _phone_number, uName: uName, p1: "", p2:"")
-        
-        print("RESULT IS BELOW")
-        print(result)
         if (result == "Required"){
             is_uName_error = true
             username_error = Error_States.Required
@@ -328,6 +281,7 @@ final class AccountInformationViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/user/change_password"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/user/change_password"
         }
         
@@ -379,7 +333,6 @@ final class AccountInformationViewModel: ObservableObject {
                     }
                     else{
                         let errorType = Error_Types.allCases.first(where: { $0.index == response.error_type })
-                        // logic for invalid password
                         if errorType == Error_Types.BlankPassword{
                             self?.is_error = true
                             self?.error = "Password can't be blank."
@@ -399,7 +352,6 @@ final class AccountInformationViewModel: ObservableObject {
                     }
                 }
                 catch{
-                    print("Something went wrong.")
                     self?.is_error = true
                     self?.error = "Something went wrong!"
                 }
@@ -427,6 +379,7 @@ final class AccountInformationViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/user/confirm_password"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/user/confirm_password"
         }
         
@@ -438,7 +391,6 @@ final class AccountInformationViewModel: ObservableObject {
         guard let session = logged_in_user else{
             return
         }
-        
         if password == ""{
             pressed_confirm_password = false
             save_p_pressed = false
@@ -460,10 +412,7 @@ final class AccountInformationViewModel: ObservableObject {
             }
             DispatchQueue.main.async {
                 do {
-                    print("IN THE DO")
                     let response = try JSONDecoder().decode(ResponseCP.self, from: data)
-                    print("RESPONSE BELOW")
-                    print(response)
                     if response.result{
                         self?.pressed_confirm_password = false
                         self?.save_p_pressed = false

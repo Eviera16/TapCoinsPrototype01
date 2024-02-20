@@ -44,7 +44,6 @@ struct PMenuView: View {
                     .simultaneousGesture(
                                     TapGesture()
                                         .onEnded {
-                                            // Call your function here
                                             viewModel.got_difficulty(diff: "easy")
                                         }
                                 )
@@ -63,7 +62,6 @@ struct PMenuView: View {
                     .simultaneousGesture(
                                     TapGesture()
                                         .onEnded {
-                                            // Call your function here
                                             viewModel.got_difficulty(diff: "medium")
                                         }
                                 )
@@ -82,7 +80,6 @@ struct PMenuView: View {
                     .simultaneousGesture(
                                     TapGesture()
                                         .onEnded {
-                                            // Call your function here
                                             viewModel.got_difficulty(diff: "hard")
                                         }
                                 )

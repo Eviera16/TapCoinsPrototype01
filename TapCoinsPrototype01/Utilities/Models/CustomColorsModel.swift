@@ -15,18 +15,6 @@ struct CustomColorsModel {
         blue: 23 / 255.0
     )
     
-    var customColor_2: Color = Color(
-        red: 128 / 255.0,
-        green: 0 / 255.0,
-        blue: 128 / 255.0
-    )
-    
-    var customColor_3: Color = Color(
-        red: 0 / 255.0,
-        green: 0 / 255.0,
-        blue: 128 / 255.0
-    )
-    
     // Off-White 250, 240, 210 try this later
     var colorSchemeOne: Color = Color (
         red: 250 / 255.0,

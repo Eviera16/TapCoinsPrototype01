@@ -33,21 +33,13 @@ final class FriendsListItemViewModel: ObservableObject {
     @Published var friend_state:FriendItemState = FriendItemState.DynamicFriend
     @Published var normalFriendName:String = ""
     @Published var loading_the_switch:Bool = false
-    // Look into how exactly this is working below
     @Published var active_friends_index_list:[Int] = []
     private var removed_friend_successfully:Bool = false
     private var view_token:String = ""
     
     init(){
-        print("IN THE FRIENDS VIEW LIST ITEM INIT")
-//        self.call_get_user()
         userModel = UserViewModel(self.userViewModel ?? Data())
-        print(userModel?.active_friends_index_list)
-        print(userModel?.friends)
         active_friends_index_list = userModel?.active_friends_index_list ?? []
-//        self.friend_logic()
-//        CustomGameHandler.sharedInstance.establishConnection()
-//        print("ESTABLISHED CONNECTION")
     }
     
     func show_hide_friend_request_actions(index:String){
@@ -56,7 +48,6 @@ final class FriendsListItemViewModel: ObservableObject {
     }
     
     func show_hide_friend_actions(index:Int, friend:String){
-        print("IN SHOW HIDE FRIENDS ACTION")
         show_friend_actions_bool = !show_friend_actions_bool
     }
     
@@ -72,13 +63,11 @@ final class FriendsListItemViewModel: ObservableObject {
                     removeFriendFromList(requestName: friend)
                 }
                 else{
-                    // Handle for error here
                     print("Something went wrong.")
                 }
                 pressed_remove_friend = false
             } catch {
                 let result = "Error: \(error.localizedDescription)"
-                print(result)
                 pressed_remove_friend = false
             }
         }
@@ -92,6 +81,7 @@ final class FriendsListItemViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/dfr"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/dfr"
         }
         
@@ -102,7 +92,6 @@ final class FriendsListItemViewModel: ObservableObject {
         guard let url = URL(string: url_string) else{
             throw FriendError.invalidURL
         }
-        print("GOT VALID URL")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
@@ -114,15 +103,9 @@ final class FriendsListItemViewModel: ObservableObject {
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             throw FriendError.invalidResponse
         }
-        print("GOT VALID RESPONSE")
         do {
-            print("IN THE DO")
             let decoder = JSONDecoder()
-            print("GOT THE DECODER")
-//            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let dcFrResponse = try decoder.decode(FriendRequestResponse.self, from: data)
-            print("GOT THE DECLINED FRIEND RESPONSE")
-            print(dcFrResponse)
             if dcFrResponse.result == "Declined"{
                 return true
             }
@@ -134,18 +117,13 @@ final class FriendsListItemViewModel: ObservableObject {
     }
     
     func acceptRequestTask(friend:String){
-        print("IN ACCEPT REQUEST TASK")
         Task {
-            print("IN THE TASK")
             do {
-                print("IN THE DO")
                 pressed_accept_request = true
                 let rNameSplit = friend.split(separator: " ")
                 let rUsername = rNameSplit[3]
                 let result:Bool = try await acceptFriendRequest(requestName: String(rUsername))
                 if result{
-                    print("RESULT IS TRUE")
-//                    addFriendToList(requestName: friend)
                     normalFriendName = String(rNameSplit[3])
                     DispatchQueue.main.async {
                         if self.num_friends == nil{
@@ -154,18 +132,15 @@ final class FriendsListItemViewModel: ObservableObject {
                         else{
                             self.num_friends! += 1
                         }
-                        print("ACCEPTED FRIEND REQUEST AND NORMALIZED FRIEND")
                         self.friend_state = FriendItemState.NormalFriend
                     }
                 }
                 else{
-                    // Handle for error here
                     print("Something went wrong.")
                 }
                 pressed_accept_request = false
             } catch {
                 let result = "Error: \(error.localizedDescription)"
-                print(result)
                 pressed_accept_request = false
             }
         }
@@ -179,6 +154,7 @@ final class FriendsListItemViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/afr"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/afr"
         }
         
@@ -189,7 +165,6 @@ final class FriendsListItemViewModel: ObservableObject {
         guard let url = URL(string: url_string) else{
             throw FriendError.invalidURL
         }
-        print("GOT VALID URL")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
@@ -201,15 +176,9 @@ final class FriendsListItemViewModel: ObservableObject {
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             throw FriendError.invalidResponse
         }
-        print("GOT VALID RESPONSE")
         do {
-            print("IN THE DO")
             let decoder = JSONDecoder()
-            print("GOT THE DECODER")
-//            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let acFrResponse = try decoder.decode(FriendRequestResponse.self, from: data)
-            print("GOT THE REMOVE FRIEND RESPONSE")
-            print(acFrResponse)
             if acFrResponse.result == "Accepted"{
                 return true
             }
@@ -228,13 +197,11 @@ final class FriendsListItemViewModel: ObservableObject {
                     removeFriendFromList(requestName: friend)
                 }
                 else{
-                    // Handle for error here
                     print("Something went wrong.")
                 }
                 pressed_remove_friend = false
             } catch {
                 let result = "Error: \(error.localizedDescription)"
-                print(result)
                 pressed_remove_friend = false
             }
         }
@@ -242,8 +209,6 @@ final class FriendsListItemViewModel: ObservableObject {
     
     func removeFriendFunction(requestName:String) async throws -> Bool{
         var url_string:String = ""
-        print("REQUEST NAME BELOW")
-        print(requestName)
         var sending_username = ""
         
         if friend_state == FriendItemState.NormalFriend{
@@ -258,6 +223,7 @@ final class FriendsListItemViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/remove_friend"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/remove_friend"
         }
         
@@ -268,7 +234,6 @@ final class FriendsListItemViewModel: ObservableObject {
         guard let url = URL(string: url_string) else{
             throw FriendError.invalidURL
         }
-        print("GOT VALID URL")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
@@ -280,15 +245,9 @@ final class FriendsListItemViewModel: ObservableObject {
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             throw FriendError.invalidResponse
         }
-        print("GOT VALID RESPONSE")
         do {
-            print("IN THE DO")
             let decoder = JSONDecoder()
-            print("GOT THE DECODER")
-//            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let rmFrResponse = try decoder.decode(FriendRequestResponse.self, from: data)
-            print("GOT THE REMOVE FRIEND RESPONSE")
-            print(rmFrResponse)
             if rmFrResponse.result == "Removed"{
                 return true
             }
@@ -321,7 +280,6 @@ final class FriendsListItemViewModel: ObservableObject {
             else{
                 self.num_friends! += 1
             }
-            print("ACCEPTED FRIEND REQUEST AND NORMALIZED FRIEND")
             self.friend_state = FriendItemState.NormalFriend
         }
     }
@@ -329,42 +287,25 @@ final class FriendsListItemViewModel: ObservableObject {
     func removeFriendFromList(requestName:String){
         DispatchQueue.main.async {
             var ecount = 0
-            var friendsList = self.userModel?.friends ?? ["NO FRIENDS"]
-            print("FIRENDS LIST BELOW")
-            print(friendsList)
+            let friendsList = self.userModel?.friends ?? ["NO FRIENDS"]
             if friendsList[0] != "NO FRIENDS"{
-                print("USER HAS FRIENDS")
                 for friendIndex in friendsList.indices {
                     if ecount == 0 && friendIndex == 5{
-                        print("SOMETHING WENT WRONG WITH THE FRIEND INDICES")
                         break
                     }
                     if friendsList[friendIndex] == requestName{
                         self.userModel?.friends?.remove(at: friendIndex)
-                        print("REMOVED FRIEND")
                     }
                     ecount+=1
                 }
                 if self.num_friends == nil || self.num_friends == 0{
-                    print("ADJUSTED NUM FRIENDS HERE")
                     self.num_friends = 0
                 }
                 else{
-                    print("SUBTRACTED FROM NUM FRIENDS HERE")
                     self.num_friends! -= 1
                 }
                 self.userModel?.numFriends = self.num_friends
-                print("NEW FRIENDS BELOW")
-                print(self.userModel?.friends)
                 self.userViewModel = self.userModel?.storageValue
-                //                            // Adjust get user call here
-                //                            self?.call_get_user()
-                //                            self?.friend_logic()
-            }
-            else{
-                print("HAS NO FRIENDS?")
-                print("NEW FRIENDS BELOW")
-                print(self.userModel?.friends)
             }
         }
     }
@@ -385,6 +326,7 @@ final class FriendsListItemViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/ad_invite"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/ad_invite"
         }
         
@@ -396,7 +338,6 @@ final class FriendsListItemViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let body: [String: AnyHashable] = [
@@ -413,7 +354,6 @@ final class FriendsListItemViewModel: ObservableObject {
             do {
                 let response = try JSONDecoder().decode(AIResponse.self, from: data)
                 if response.result == "Accepted"{
-//                    CustomGameHandler.sharedInstance.closeConnection()
                     DispatchQueue.main.async {
                         var index = 0
                         for friend in self?.userModel?.friends ?? ["NO FRIENDS"]{
@@ -424,10 +364,6 @@ final class FriendsListItemViewModel: ObservableObject {
                             index += 1
                         }
                         self?.userViewModel = self?.userModel?.storageValue
-                        // self?.friend_logic() // Look into if this is working/ doing anything
-                        print("FIRST AND SECOND PLAYER BELOW")
-                        print(response.first)
-                        print(response.second)
                         self?.first_player = response.first
                         self?.second_player = response.second
                         self?.game_id = response.gameId
@@ -464,6 +400,7 @@ final class FriendsListItemViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/ad_invite"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/ad_invite"
         }
         
@@ -475,11 +412,6 @@ final class FriendsListItemViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        print("THE USERNAME FOR DECLINE IS BELOW")
-        print("THE USERNAME FOR DECLINE IS BELOW")
-        print("THE USERNAME FOR DECLINE IS BELOW")
-        print(rNameSplit[3])
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let body: [String: AnyHashable] = [
@@ -499,7 +431,6 @@ final class FriendsListItemViewModel: ObservableObject {
                 if response.result == "Cancelled"{
                     DispatchQueue.main.async {
                         self?.pressed_decline_invite = false
-//                        self?.addFriendToList(requestName: String(rNameSplit[3]))
                         self?.normalFriendName = String(rNameSplit[3])
                         if self?.num_friends == nil{
                             self?.num_friends = 1
@@ -507,11 +438,7 @@ final class FriendsListItemViewModel: ObservableObject {
                         else{
                             self?.num_friends! += 1
                         }
-                        print("ACCEPTED FRIEND REQUEST AND NORMALIZED FRIEND")
                         self?.friend_state = FriendItemState.NormalFriend
-//                        self?.mSocket.emit("DECLINED", response.gameId)
-                        // Adjust get user call here
-//                        self?.call_get_user()
                     }
                 }
             }
@@ -536,6 +463,7 @@ final class FriendsListItemViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/send_invite"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/send_invite"
         }
         
@@ -547,7 +475,6 @@ final class FriendsListItemViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let body: [String: AnyHashable] = [
@@ -563,7 +490,6 @@ final class FriendsListItemViewModel: ObservableObject {
             do {
                 let response = try JSONDecoder().decode(CGResponse.self, from: data)
                 if response.first != "ALREADY EXISTS"{
-//                    CustomGameHandler.sharedInstance.closeConnection()
                     DispatchQueue.main.async {
                         self?.first_player = response.first
                         self?.second_player = response.second
@@ -573,14 +499,6 @@ final class FriendsListItemViewModel: ObservableObject {
                         self?.is_first = true
                         self?.in_game = true
                         self?.pressed_send_invite = false
-//                        if self?.userModel.is_guest == false {
-//                            self?.addFriendRequest()
-//                        }
-//                        else{
-//                            print("NO ICLOUD STATUS IS A GUEST")
-//                            self?.result = "IS A GUEST"
-//                        }
-//                        self?.addGameInvite(sender: response.first, receiver: response.second)
                     }
                 }
             }

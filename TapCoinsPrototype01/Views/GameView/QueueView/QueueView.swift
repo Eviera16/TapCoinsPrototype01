@@ -28,7 +28,6 @@ struct QueueView: View {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle(tint:newCustomColorsModel.customColor_1))
                     .scaleEffect(UIScreen.main.bounds.width * 0.01)
-//                BannerAd(unitID: "ca-app-pub-4507110298752888/4772121312")
                 BannerAd(unitID: "ca-app-pub-3940256099942544/2934735716")
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.2)
                 Button(action: {

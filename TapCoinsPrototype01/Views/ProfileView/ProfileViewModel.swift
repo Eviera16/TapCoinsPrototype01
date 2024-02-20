@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-//import CloudKit
 
 final class ProfileViewModel: ObservableObject {
     @AppStorage("session") var logged_in_user: String?
@@ -32,9 +31,6 @@ final class ProfileViewModel: ObservableObject {
     private var globalFunctions = GlobalFunctions()
     
     init(){
-        //        if UIScreen.main.bounds.height < 750.0{
-        //            smaller_screen = true
-        //        }
         let convertedData = UserViewModel(self.userViewModel ?? Data())
         self.userModel = convertedData ?? UserViewModel(first_name: "NO FIRST NAME", last_name: "NO LAST NAME")
         if self.userModel.win_streak ?? 0 > 0 {
@@ -102,11 +98,9 @@ final class ProfileViewModel: ObservableObject {
     }
     
     func sendRequest(){
-        print("IN SEND REQUEST")
         self.pressed_send_request = true
         self.usernameRes = false
         if sUsername.count > 0{
-            print("")
             var url_string:String = ""
             
             if debug ?? true{
@@ -114,6 +108,7 @@ final class ProfileViewModel: ObservableObject {
                 url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/sfr"
             }
             else{
+                print("DEBUG IS FALSE")
                 url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/sfr"
             }
             
@@ -141,14 +136,12 @@ final class ProfileViewModel: ObservableObject {
                     let response = try JSONDecoder().decode(rResponse.self, from: data)
                     DispatchQueue.main.async {
                         if response.result != "Success"{
-                            print("response is not good")
                             self?.invalid_entry = true
                             self?.result = response.result + response.friends
                         }
                         else{
                             self?.usernameRes = true
                             self?.result = "Sending Friend Request"
-//                            getUser
                             self?.loaded_get_user = false
                             DispatchQueue.main.async { [weak self] in
                                 self?.globalFunctions.getUser(token:self?.logged_in_user ?? "None", this_user:nil, curr_user:nil)
@@ -160,10 +153,8 @@ final class ProfileViewModel: ObservableObject {
 //                                self?.result = self?.globalFunctions.addRequest(sender: self?.userModel.username ?? "None", receiver: self?.sUsername ?? "None", requestType: "FriendRequest") ?? "ErrorOccured"
                             }
                             else{
-                                print("NO ICLOUD STATUS IS A GUEST")
                                 self?.result = "IS A GUEST"
                             }
-                            
                         }
                     }
                 }
@@ -174,7 +165,6 @@ final class ProfileViewModel: ObservableObject {
             task.resume()
         }
         else{
-            print("NOTHING ENTERED")
             self.result = "Invalid entry."
             self.pressed_send_request = false
             self.invalid_entry = true
@@ -185,24 +175,4 @@ final class ProfileViewModel: ObservableObject {
         let result: String
         let friends:String
     }
-//    private func addFriendRequest(){
-//        let newFriendRequest = CKRecord(recordType: "FriendRequest")
-//        newFriendRequest["sender"] = self.userModel.username
-//        newFriendRequest["receiver"] = sUsername
-//        self.result = (newFriendRequest["sender"] ?? "No Sender") + " | " + (newFriendRequest["receiver"] ?? "No Receiver")
-//        saveFriendRequest(record: newFriendRequest)
-//        
-////        let newGameInvite = CKRecord(recordType: "GameInvite")
-////        newGameInvite["sender"] = sender
-////        newGameInvite["receiver"] = receiver
-////        saveGameInvite(record: newGameInvite)
-//    }
-////    globalFunctions
-//    private func saveFriendRequest(record:CKRecord){
-//        CKContainer(identifier: "iCloud.com.ericviera.TapTapCoin").publicCloudDatabase.save(record) { [weak self] returnedRecord, returnedError in
-//            DispatchQueue.main.async {
-//                self?.sUsername = ""
-//            }
-//        }
-//    }
 }

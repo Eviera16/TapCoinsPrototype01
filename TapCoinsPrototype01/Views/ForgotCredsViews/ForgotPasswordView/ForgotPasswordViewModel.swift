@@ -37,6 +37,7 @@ final class ForgotPasswordViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/user/send_code"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/user/send_code"
         }
         
@@ -99,14 +100,15 @@ final class ForgotPasswordViewModel: ObservableObject {
         submitted = false
         
         var request:URLRequest = URLRequest(url: URL(string: "")!)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
         if debug ?? true{
+            print("DEBUG IS TRUE")
             guard let url = URL(string: "http://127.0.0.1:8000/tapcoinsapi/user/change_password") else{
                 return
             }
             request = URLRequest(url: url)
         }
         else{
+            print("DEBUG IS FALSE")
             guard let url = URL(string: "https://tapcoin1.herokuapp.com/tapcoinsapi/user/change_password") else{
                 return
             }
@@ -142,13 +144,8 @@ final class ForgotPasswordViewModel: ObservableObject {
             
             DispatchQueue.main.async {
                 do {
-                    print("BEFORE RESPONSE")
                     let response = try JSONDecoder().decode(Response2.self, from: data)
-                    print("AFTER RESPONSE")
-                    print(response)
                     if response.response{
-                        print("RESPONSE IS TRUE")
-                        print(response)
                         if response.expired{
                             self?.is_error = true
                             self?.error = "Expired code."
@@ -159,10 +156,7 @@ final class ForgotPasswordViewModel: ObservableObject {
                         }
                     }
                     else{
-                        print("RESPONSE IS FALSE")
-                        print(response)
                         let errorType = Error_Types.allCases.first(where: { $0.index == response.error_type })
-                        // logic for invalid password
                         if errorType == Error_Types.BlankPassword{
                             self?.is_error = true
                             self?.error = response.message
@@ -182,13 +176,11 @@ final class ForgotPasswordViewModel: ObservableObject {
                     }
                 }
                 catch{
-                    print("Something went wrong.")
                     self?.is_error = true
                     self?.error = "Something went wrong!"
                 }
                 self?.send_pressed = false
             }
-            
         })
         task.resume()
     }

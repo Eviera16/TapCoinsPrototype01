@@ -11,7 +11,6 @@ import SwiftUI
 struct AboutView: View {
     @AppStorage("darkMode") var darkMode: Bool?
     @Environment(\.presentationMode) var presentationMode
-//    @AppStorage("session") var logged_in_user: String?
     var newCustomColorsModel = CustomColorsModel()
     
     var body: some View {
@@ -76,100 +75,8 @@ struct AboutView: View {
                                     .frame(width: UIScreen.main.bounds.width * 0.85, height: UIScreen.main.bounds.height * 0.005)
                             }
                             .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.2, alignment: .center)
-//                            VStack(alignment: .leading, spacing: UIScreen.main.bounds.width * 0.03){
-//                                Text("Find A Game")
-//                                    .font(.system(size: UIScreen.main.bounds.width * 0.08))
-//                                    .foregroundColor(newCustomColorsModel.colorSchemeFour)
-//                                    .fontWeight(.bold)
-//                                Text("and play against an opponent online to tap more coins then they can! Build your streak up, but be quick you only have 2 minutes between each game to continue your streak.")
-//                                    .foregroundColor(newCustomColorsModel.colorSchemeThree)
-//                            }
-//                            .padding()
-//                            .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.6, alignment: .center)
-//                            .background(darkMode ?? false ? Color(.black) : newCustomColorsModel.colorSchemeOne)
-//                            .cornerRadius(UIScreen.main.bounds.width * 0.03)
-//                            VStack{
-//                                Rectangle()
-//                                    .fill(newCustomColorsModel.customColor_1)
-//                                    .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.005)
-//                            }.frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.2, alignment: .center)
-//                            VStack(alignment: .leading, spacing: UIScreen.main.bounds.width * 0.03){
-//                                Text("Find A Game")
-//                                    .font(.system(size: UIScreen.main.bounds.width * 0.08))
-//                                    .foregroundColor(newCustomColorsModel.colorSchemeFour)
-//                                    .fontWeight(.bold)
-//                                Text("and play against an opponent online to tap more coins then they can! But be quick you only have 2 minutes between each game to continue your streak.")
-//                                    .foregroundColor(newCustomColorsModel.colorSchemeThree)
-//                            }
-//                            .padding()
-//                            .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.6, alignment: .center)
-//                            .background(darkMode ?? false ? Color(.black) : newCustomColorsModel.colorSchemeOne)
-//                            .cornerRadius(UIScreen.main.bounds.width * 0.03)
-//                            VStack{
-//                                Rectangle()
-//                                    .fill(newCustomColorsModel.customColor_1)
-//                                    .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.005)
-//                            }.frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.1, alignment: .center)
                         }
                     }
-                    
-//                    VStack(alignment: .leading, spacing: UIScreen.main.bounds.width * 0.03){
-//
-//                        VStack(alignment: .leading, spacing: UIScreen.main.bounds.width * 0.03){
-//                            Text("Find A Game")
-//                                .font(.system(size: UIScreen.main.bounds.width * 0.08))
-//                                .foregroundColor(newCustomColorsModel.customColor_1)
-//                                .fontWeight(.bold)
-//                            Text("and play against an opponent online to tap more coins then they can! Build your streak up, but be quick you only have 2 minutes between each game to continue your streak.")
-//                                .foregroundColor(newCustomColorsModel.customColor_1)
-//                        }
-//                        .padding()
-//                        .background(newCustomColorsModel.customColor_2)
-//                        .cornerRadius(UIScreen.main.bounds.width * 0.03)
-//                        VStack(alignment: .leading, spacing: UIScreen.main.bounds.width * 0.03){
-//                            Text("Create")
-//                                .font(.system(size: UIScreen.main.bounds.width * 0.08))
-//                                .foregroundColor(newCustomColorsModel.customColor_1)
-//                                .fontWeight(.bold)
-//                            Text("a custom game and play against friends!")
-//                                .foregroundColor(newCustomColorsModel.customColor_1)
-//                        }
-//                        .padding()
-//                        .background(newCustomColorsModel.customColor_2)
-//                        .cornerRadius(UIScreen.main.bounds.width * 0.03)
-//                        VStack(alignment: .leading, spacing: UIScreen.main.bounds.width * 0.03){
-//                            Text("Practice")
-//                                .font(.system(size: UIScreen.main.bounds.width * 0.08))
-//                                .foregroundColor(newCustomColorsModel.customColor_1)
-//                                .fontWeight(.bold)
-//                            Text("against the computer to get your skillz up!")
-//                                .foregroundColor(newCustomColorsModel.customColor_1)
-//                        }
-//                        .padding()
-//                        .background(newCustomColorsModel.customColor_2)
-//                        .cornerRadius(UIScreen.main.bounds.width * 0.03)
-//
-//                        VStack(alignment: .leading, spacing: UIScreen.main.bounds.width * 0.03){
-//                            Text("View your Profile")
-//                                .font(.system(size: UIScreen.main.bounds.width * 0.08))
-//                                .foregroundColor(newCustomColorsModel.customColor_1)
-//                                .fontWeight(.bold)
-//                            Text("to see what your current win streak is and your best overall!")
-//                                .foregroundColor(newCustomColorsModel.customColor_1)
-//                        }
-//                        .padding()
-//                        .background(newCustomColorsModel.customColor_2)
-//                        .cornerRadius(UIScreen.main.bounds.width * 0.03)
-//                    }
-//                    VStack(alignment: .center, spacing: UIScreen.main.bounds.width * 0.05){
-//                        Text("Good luck and have fun!!")
-//                            .font(.system(size: UIScreen.main.bounds.width * 0.08))
-//                            .foregroundColor(newCustomColorsModel.customColor_1)
-//                            .fontWeight(.bold)
-//                    }
-//                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.05)
-//                    .background(newCustomColorsModel.customColor_2)
-//                    Spacer()
                 }
                 Spacer()
             }
