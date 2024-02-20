@@ -31,7 +31,6 @@ final class SecurityQuestionsViewModel: ObservableObject {
     @Published var username_error:String = ""
     
     func check_if_user_has_questions(){
-        print("IN check_if_user_has_questions FUNCTION")
         username_sent = true
         submit_pressed = true
         var url_string:String = ""
@@ -41,6 +40,7 @@ final class SecurityQuestionsViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/securityquestions/check_has_questions"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/securityquestions/check_has_questions"
         }
         
@@ -66,9 +66,6 @@ final class SecurityQuestionsViewModel: ObservableObject {
                     if response.result == "Success"{
                         self?.valid_userename = true
                         self?.submit_pressed = false
-                        print("RESPONSES ARE BELOW HERE")
-                        print(response.question_1)
-                        print(response.question_2)
                         self?.question_1 = response.question_1
                         self?.question_2 = response.question_2
                     }
@@ -89,7 +86,6 @@ final class SecurityQuestionsViewModel: ObservableObject {
         let question_2:String
     }
     func check_answers_to_questions(){
-        print("CHECKING ANSWERS TO QUESTIONS")
         username_sent = true
         submit_pressed = true
         var url_string:String = ""
@@ -99,6 +95,7 @@ final class SecurityQuestionsViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/securityquestions/check_users_answers"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/securityquestions/check_users_answers"
         }
         
@@ -136,7 +133,6 @@ final class SecurityQuestionsViewModel: ObservableObject {
                 do {
                     let response = try JSONDecoder().decode(Response2.self, from: data)
                     if response.result == true{
-                        print("ANSWERS ARE CORRECT")
                         self?.correct_answers = true
                         self?.incorrect_answers_errors = false
                         self?.submit_pressed = false

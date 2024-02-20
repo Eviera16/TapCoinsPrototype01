@@ -34,6 +34,7 @@ final class ChangePasswordViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/user/change_password"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/user/change_password"
         }
         
@@ -72,24 +73,16 @@ final class ChangePasswordViewModel: ObservableObject {
             
             DispatchQueue.main.async {
                 do {
-                    print("BEFORE RESPONSE")
                     let response = try JSONDecoder().decode(Response3.self, from: data)
-                    print("AFTER RESPONSE")
-                    print(response)
                     if response.response{
-                        print("RESPONSE IS TRUE")
-                        print(response)
                         self?.submitted = true
                         self?.submit_pressed = false
                         self?.changing_password = false
                         self?.logged_in_user = nil
                     }
                     else{
-                        print("RESPONSE IS FALSE")
-                        print(response)
                         self?.submit_pressed = false
                         let errorType = Error_Types.allCases.first(where: { $0.index == response.error_type })
-                        // logic for invalid password
                         if errorType == Error_Types.BlankPassword{
                             self?.is_error = true
                             self?.error = response.message
@@ -105,7 +98,6 @@ final class ChangePasswordViewModel: ObservableObject {
                     }
                 }
                 catch{
-                    print("Something went wrong.")
                     self?.is_error = true
                     self?.error = "Something went wrong!"
                 }

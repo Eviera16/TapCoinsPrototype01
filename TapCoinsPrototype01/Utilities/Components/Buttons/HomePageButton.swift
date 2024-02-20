@@ -12,7 +12,6 @@ import SwiftUI
 struct HomePageButton : View {
     @AppStorage("darkMode") var darkMode: Bool?
     var newCustomColorsModel = CustomColorsModel()
-//    @StateObject private var viewModel = HomeViewModel()
     var _label:String
     var body: some View {
             NavigationLink(destination: {
@@ -37,19 +36,6 @@ struct HomePageButton : View {
                         .navigationBarItems(leading: RedBackButtonView())
                 }
             }, label: {
-            //                        if viewModel.hasRQ{
-            //                            Image(systemName: "gearshape.fill")
-            //                                   .background(Color(.red))
-            //                                   .foregroundColor(Color(.yellow))
-            //                                   .font(.system(size: UIScreen.main.bounds.width * 0.18))
-            //                        }
-            //                        else if viewModel.hasGI{
-            //                            Image(systemName: "gearshape.fill")
-            //                                   .background(Color(.red))
-            //                                   .foregroundColor(Color(.yellow))
-            //                                   .font(.system(size: UIScreen.main.bounds.width * 0.18))
-            //                        }
-            //                        else{
                 if _label == "Settings"{
                     Image(systemName: "gearshape.fill")
                         .background(darkMode ?? false ? Color(.black) : newCustomColorsModel.colorSchemeOne)
@@ -66,9 +52,6 @@ struct HomePageButton : View {
                         .background(newCustomColorsModel.colorSchemeThree)
                         .clipShape(RoundedRectangle(cornerSize: CGSize(width: UIScreen.main.bounds.height * 0.02, height: UIScreen.main.bounds.height * 0.02)))
                 }
-            //                        }
             })
-        
-        
     }
 }

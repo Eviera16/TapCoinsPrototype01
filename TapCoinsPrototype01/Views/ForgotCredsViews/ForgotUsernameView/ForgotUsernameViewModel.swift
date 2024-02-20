@@ -28,6 +28,7 @@ final class ForgotUsernameViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/user/send_username"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/user/send_username"
         }
         
@@ -74,7 +75,7 @@ final class ForgotUsernameViewModel: ObservableObject {
                     }
                 }
                 catch{
-                    print("IN THE CATCH METHOD FOR SOME REASON")
+                    print("Something went wrong.")
                 }
                 self?.send_pressed = false
             }

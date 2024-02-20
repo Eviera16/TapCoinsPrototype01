@@ -69,37 +69,5 @@ struct ToggleSettingsSwitchView: View {
         default:
             Text("Something Went Wrong.")
         }
-//        if toggle_setting_title == ToggleSettingTitles.NotificationsToggle{
-//            Toggle(isOn:Binding(
-//                get: { viewModel.notifications_on ?? false },
-//                set: { viewModel.notifications_on = $0 }
-//            ),
-//            label: {
-//                Text(toggle_label).foregroundColor(newCustomColorsModel.customColor_2)
-//            })
-//            .disabled(viewModel.is_guest)
-//            .onTapGesture {
-//                viewModel.turn_on_off_notifications()
-//            }
-//        }
-//        else if toggle_setting_title == ToggleSettingTitles.SoundsToggle{
-//            Toggle(isOn: Binding(
-//                get: { viewModel.sound_on ?? false },
-//                set: { viewModel.sound_on = $0 }
-//            ),
-//                   label: {
-//                       Text(toggle_label).foregroundColor(newCustomColorsModel.customColor_2)
-//                   })
-//        }
-//        // Haptics
-//        else if toggle_setting_title == ToggleSettingTitles.HapticsToggle{
-//            Toggle(isOn: Binding(
-//                get: { viewModel.haptics_on ?? false },
-//                set: { viewModel.haptics_on = $0 }
-//            ),
-//                   label: {
-//                       Text(toggle_label).foregroundColor(newCustomColorsModel.customColor_2)
-//                   })
-//        }
     }
 }

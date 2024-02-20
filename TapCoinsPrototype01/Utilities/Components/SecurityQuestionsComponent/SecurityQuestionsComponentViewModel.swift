@@ -38,6 +38,7 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/securityquestions/save_users_security_questions"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/securityquestions/save_users_security_questions"
         }
         
@@ -49,13 +50,6 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
         guard let session = logged_in_user else{
             return
         }
-        print("SESSION IS BELOW")
-        print(session)
-        print("SAVING DATA BELOW")
-        print(question_1)
-        print(answer_1)
-        print(question_2)
-        print(answer_2)
         
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -72,21 +66,13 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
             guard let data = data, error == nil else {
                 return
             }
-            print("DATA BELOW")
-            print(data)
             DispatchQueue.main.async {
                 do {
-                    print("IN THE DO")
                     let response = try JSONDecoder().decode(Save_SQ_Response.self, from: data)
-                    print("RESPONSE BELOW")
-                    print(response)
-                    self?.show_security_questions = false
-                    print("SHOW SECURITY QUESTIONS IS FALSE")
+                    self?.show_security_questions = false                    
                     self?.pressed_check_and_set_sqs = false
                     self?.is_loading = false
-                    print("PRESSED CHECK AND SET SQS IS FALSE")
                     self?.saved_questions_answers = true
-                    print("SAVED QUESTIONS AND ANSWERS IS TRUE")
                 }
                 catch{
                     print(error)
@@ -103,31 +89,22 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
     func check_and_set_sqs(){
         pressed_check_and_set_sqs = true
         is_loading = true
-        print("THE DATA I AM LOOKING FOR IS BELOW")
-        print(question_1)
-        print(answer_1)
-        print(question_2)
-        print(answer_2)
         if question_1 == 0 {
-            print("QUESTION 1 IS NIL")
             self.pressed_check_and_set_sqs = false
             self.is_loading = false
             return
         }
         if answer_1 == "" {
-            print("ANSWER 1 IS NIL")
             self.pressed_check_and_set_sqs = false
             self.is_loading = false
             return
         }
         if question_2 == 0{
-            print("QUESTION 2 IS NIL")
             self.pressed_check_and_set_sqs = false
             self.is_loading = false
             return
         }
         if answer_2 == ""{
-            print("ANSWER 2 IS NIL")
             self.pressed_check_and_set_sqs = false
             self.is_loading = false
             return
@@ -143,6 +120,7 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/securityquestions/get_security_questions_text"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/securityquestions/get_security_questions_text"
         }
         
@@ -157,17 +135,11 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
             guard let data = data, error == nil else {
                 return
             }
-            print("DATA BELOW")
-            print(data)
             DispatchQueue.main.async {
                 do {
-                    print("IN THE DO")
                     let response = try JSONDecoder().decode(SecurityQResponse.self, from: data)
-                    print("RESPONSE BELOW")
-                    print(response)
                     self?.options1 = response.options_1
                     self?.options2 = response.options_2
-                    print("GOT THE SECURITY QUESTIONS")
                     self?.got_security_questions = true
                 }
                 catch{
@@ -184,8 +156,6 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
     }
     
     func get_users_questions_and_answers(){
-        print("IN get_users_questions_and_answers")
-        print(logged_in_user)
         var url_string:String = ""
         
         if debug ?? true{
@@ -193,6 +163,7 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/securityquestions/get_users_questions_answers"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/securityquestions/get_users_questions_answers"
         }
         
@@ -216,14 +187,12 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
                 do {
                     let response = try JSONDecoder().decode(ResponseSQA.self, from: data)
                     if response.result == "Success"{
-                        print("IT IS A SUCCESS $$$$$$$$$$")
                         self?.question_1 = self?.options1.firstIndex(of: response.question_1) ?? 0
                         self?.question_2 = self?.options2.firstIndex(of: response.question_2) ?? 0
                         self?.answer_1 = response.answer_1
                         self?.answer_2 = response.answer_2
                     }
                     else{
-                        print("IT IS NOT SUCESSFULL $$$$$$$$$$")
                         self?.question_1 = 0
                         self?.question_2 = 0
                         self?.answer_1 = ""
@@ -257,6 +226,7 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/user/confirm_password"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/user/confirm_password"
         }
         
@@ -290,10 +260,7 @@ final class SecurityQuestionsComponentViewModel: ObservableObject {
             }
             DispatchQueue.main.async {
                 do {
-                    print("IN THE DO")
                     let response = try JSONDecoder().decode(ResponseCP.self, from: data)
-                    print("RESPONSE BELOW")
-                    print(response)
                     if response.result{
                         self?.pressed_confirm_password = false
                         self?.is_loading = false

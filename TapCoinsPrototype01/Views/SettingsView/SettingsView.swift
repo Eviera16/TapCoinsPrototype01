@@ -33,12 +33,6 @@ struct SettingsView: View {
                     .frame(width: UIScreen.main.bounds.width , height: UIScreen.main.bounds.height * 0.08)
                     .foregroundColor(newCustomColorsModel.customColor_1)
                     .background(newCustomColorsModel.colorSchemeThree)
-//                Text(viewModel.metaMaskRepo.ethereum.selectedAddress)
-//                    .font(.system(size: UIScreen.main.bounds.width * 0.08))
-//                    .fontWeight(.bold)
-//                    .frame(width: UIScreen.main.bounds.width , height: UIScreen.main.bounds.height * 0.08)
-//                    .foregroundColor(newCustomColorsModel.customColor_1)
-//                    .background(newCustomColorsModel.customColor_3)
                 Spacer()
                 List{
                     Section(header: Text("View and edit your account information such as username, password, phone number, etc.")){
@@ -77,48 +71,6 @@ struct SettingsView: View {
                             }
                         })
                     }
-//                    if viewModel.got_the_users_wallet{
-//                        Section(header: Text("You Are Connected!")){
-//                            Text(viewModel.users_address + " is Connected!")
-//                                .fontWeight(.bold)
-//                                .frame(width: 300, height: 50, alignment: .center)
-//                                .background(Color(.green))
-//                                .foregroundColor(Color(.black))
-//                                .cornerRadius(10)
-//                        }
-//                    }else{
-//                        Section(header: Text("Click here to connect to MetaMask.")){
-//                            Button(action: {
-//                                if debug ?? true{
-//                                    print("Development Environment.")
-//                                }
-//                                else{
-//                                    if viewModel.clicked_metamask_connect == false{
-//                                        viewModel.metaMaskRepo.connectToDapp()
-//                                        viewModel.clicked_metamask_connect = true
-//                                    }
-//                                }
-//                            }, label: {
-//                                Text("Connect To MetaMask!")
-//                                    .fontWeight(.bold)
-//                                    .frame(width: 200, height: 50, alignment: .center)
-//                                    .background(viewModel.clicked_metamask_connect ? Color(.gray) : newCustomColorsModel.customColor_1)
-//                                    .foregroundColor(viewModel.clicked_metamask_connect ? Color(.black) : newCustomColorsModel.customColor_2)
-//                                    .cornerRadius(10)
-//                            })
-//                        }
-//                        Section(header: Text("Click here to connect your MetaMask Wallet to TapCoins.")){
-//                            Button(action: {viewModel.pressed_get_wallet ? nil : print(viewModel.getWallet())
-//                            }, label: {
-//                                Text("Connect Your Wallet!")
-//                                    .fontWeight(.bold)
-//                                    .frame(width: 200, height: 50, alignment: .center)
-//                                    .background(viewModel.got_the_users_wallet ? .green : newCustomColorsModel.customColor_3)
-//                                    .foregroundColor(newCustomColorsModel.customColor_1)
-//                                    .cornerRadius(10)
-//                            })
-//                        }
-//                    }
                 } // List
                 .foregroundColor(darkMode ?? false ? Color(.white) : Color(.black))
                 .scrollContentBackground(.hidden)

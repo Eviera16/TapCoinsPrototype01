@@ -44,12 +44,9 @@ final class RegistrationViewModel: ObservableObject {
         if check_errors_function(state: Error_States.Required, _phone_number: phone_number, uName: username, p1: password, p2:confirm_password) == false{
             return
         }
-        
         if check_errors_function(state: Error_States.Password_Match, _phone_number: phone_number,  uName: username, p1: password, p2:confirm_password) == false{
             return
         }
-        
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
         var url_string:String = ""
         
         if debug ?? true{
@@ -63,9 +60,6 @@ final class RegistrationViewModel: ObservableObject {
         guard let url = URL(string: url_string) else{
             return
         }
-        print("DATA BELOW")
-        print("USERNAME: ", username)
-        print("PASSWORD: ", password)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -86,8 +80,6 @@ final class RegistrationViewModel: ObservableObject {
             DispatchQueue.main.async {
                 do {
                     let response = try JSONDecoder().decode(Response.self, from: data)
-                    print("RESPONSE IS BELOW")
-                    print(response)
                     if response.response == "Success"{
                         self?.logged_in_user = response.token
                         self?.show_security_questions = true
@@ -97,13 +89,10 @@ final class RegistrationViewModel: ObservableObject {
                         self?.is_phone_error = true
                         self?.reg_pressed = false
                     }
-//                            self?.in_game = false
                 }
                 catch{
                     do {
                         let response2 = try JSONDecoder().decode(ErrResponse.self, from: data)
-                        print("RESPONSE2 IS BELOW")
-                        print(response2)
                         if response2.isErr == true{
                             self?.register_error_string = response2.error
                             self?.register_error = true
@@ -117,8 +106,6 @@ final class RegistrationViewModel: ObservableObject {
                         }
                     }
                     catch{
-                        print("RESPONSE 2 ERROR CATCH")
-                        print(error)
                         self?.reg_pressed = false
                         self?.username = ""
                         self?.password = ""

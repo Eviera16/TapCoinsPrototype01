@@ -13,10 +13,6 @@ struct RegistrationView: View {
     @StateObject private var viewModel = RegistrationViewModel()
     var newCustomColorsModel = CustomColorsModel()
     
-//    init(){
-//            UITableView.appearance().backgroundColor = .clear
-//        }
-    
     var body: some View {
         ZStack{
             newCustomColorsModel.colorSchemeOne.ignoresSafeArea()
@@ -34,16 +30,7 @@ struct RegistrationView: View {
                         Form{
                             Section(header: Text("")){
                                 TextField("First Name (optional)", text: $viewModel.first_name)
-    //                            if viewModel.is_fName_error{
-    //                                Label(viewModel.first_name_error?.rawValue ?? "", systemImage: "xmark.octagon")
-    //                                    .foregroundColor(newCustomColorsModel.customColor_2)
-    //                            }
-
                                 TextField("Last Name (optional)", text: $viewModel.last_name)
-    //                            if viewModel.is_lName_error{
-    //                                Label(viewModel.last_name_error?.rawValue ?? "", systemImage: "xmark.octagon")
-    //                                    .foregroundColor(newCustomColorsModel.customColor_2)
-    //                            }
                                 HStack{
                                     TextField("Phone number (optional)", text: $viewModel.phone_number)
                                     Button(action: {
@@ -103,14 +90,6 @@ struct RegistrationView: View {
                     }
                 }
             }
-            
-//            Button(action: {
-//                viewModel.phone_info = !viewModel.phone_info
-//            }, label: {
-//                Label("", systemImage: "info.circle.fill")
-//                    .foregroundColor(newCustomColorsModel.customColor_3)
-//            })
-//            .offset(x: UIScreen.main.bounds.width * 0.4, y: UIScreen.main.bounds.height * -0.135)
         } // ZStack
     }
 }

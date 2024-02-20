@@ -14,42 +14,42 @@ struct FriendsView: View {
     @AppStorage("darkMode") var darkMode: Bool?
     var newCustomColorsModel = CustomColorsModel()
     var body: some View {
-            ZStack{
-                if darkMode ?? false{
-                    Color(.black).ignoresSafeArea()
-                }
-                else{
-                    newCustomColorsModel.colorSchemeOne.ignoresSafeArea()
-                }
-                VStack{
-                    Text("Friends")
-                        .font(.system(size: UIScreen.main.bounds.width * 0.1))
-                        .fontWeight(.bold)
-                        .frame(width: UIScreen.main.bounds.width , height: UIScreen.main.bounds.height * 0.08)
-                        .foregroundColor(newCustomColorsModel.customColor_1)
-                        .background(newCustomColorsModel.colorSchemeThree)
+        ZStack{
+            if darkMode ?? false{
+                Color(.black).ignoresSafeArea()
+            }
+            else{
+                newCustomColorsModel.colorSchemeOne.ignoresSafeArea()
+            }
+            VStack{
+                Text("Friends")
+                    .font(.system(size: UIScreen.main.bounds.width * 0.1))
+                    .fontWeight(.bold)
+                    .frame(width: UIScreen.main.bounds.width , height: UIScreen.main.bounds.height * 0.08)
+                    .foregroundColor(newCustomColorsModel.customColor_1)
+                    .background(newCustomColorsModel.colorSchemeThree)
 
-                    ScrollView{
-                        VStack{
-                            if viewModel.userModel?.fArrayCount == 0{
-                                HStack{
-                                    Text("No friends yet")
-                                        .font(.system(size: UIScreen.main.bounds.width * 0.06))
-                                        .foregroundColor(newCustomColorsModel.colorSchemeFour)
-                                        .fontWeight(.bold)
-                                }
-                                Rectangle()
-                                    .fill(newCustomColorsModel.colorSchemeFour)
-                                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.001)
+                ScrollView{
+                    VStack{
+                        if viewModel.userModel?.fArrayCount == 0{
+                            HStack{
+                                Text("No friends yet")
+                                    .font(.system(size: UIScreen.main.bounds.width * 0.06))
+                                    .foregroundColor(newCustomColorsModel.colorSchemeFour)
+                                    .fontWeight(.bold)
                             }
-                            else{
-                                ForEach(Array(viewModel.userModel?.friends?.enumerated() ?? ["NO FRIENDS"].enumerated()), id: \.element) { index, friend in
-                                    FriendsListItemView(friend: friend, index: index)
-                                }
+                            Rectangle()
+                                .fill(newCustomColorsModel.colorSchemeFour)
+                                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.001)
+                        }
+                        else{
+                            ForEach(Array(viewModel.userModel?.friends?.enumerated() ?? ["NO FRIENDS"].enumerated()), id: \.element) { index, friend in
+                                FriendsListItemView(friend: friend, index: index)
                             }
                         }
                     }
                 }
-            } //ZStack
+            }
+        } //ZStack
     }
 }

@@ -34,9 +34,7 @@ final class ContentViewModel: ObservableObject {
     
     func guestLogin(){
         glPressed = true
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
         var url_string:String = ""
-        
         if debug ?? true{
             print("DEBUG IS TRUE")
             url_string = "http://127.0.0.1:8000/tapcoinsapi/user/guestLogin"
@@ -66,7 +64,6 @@ final class ContentViewModel: ObservableObject {
                     let response = try JSONDecoder().decode(GLResponse.self, from: data)
                     if response.error == false{
                         self?.logged_in_user = response.token
-//                        self?.in_game = false
                         self?.glPressed = false
                     }
                     else{

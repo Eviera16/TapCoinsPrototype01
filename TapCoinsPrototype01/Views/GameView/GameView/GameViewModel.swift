@@ -101,18 +101,9 @@ final class GameViewModel: ObservableObject {
     
     init(){
         let convertedData = UserViewModel(self.userViewModel ?? Data())
-        print("USER MODEL IS BELOW")
-        print(convertedData?.username)
         self.userModel = convertedData ?? UserViewModel(first_name: "NO FIRST NAME", last_name: "NO LAST NAME")
         self.curr_username = userModel.username ?? "NO USERNAME"
-        print("FIRST PLAYER BELOW")
-        print(first_player)
-        print("SECOND PLAYER BELOW")
-        print(second_player)
-        print("CURRENT USER NAME BELOW")
-        print(self.curr_username)
         if (from_queue ?? true){
-            print("IS NOT FROM CUSTOM GAME IN GAME VIEW")
             GameHandler.sharedInstance.establishConnection()
             first = first_player ?? "No First"
             second = second_player ?? "No Second"
@@ -120,7 +111,6 @@ final class GameViewModel: ObservableObject {
             mSocket.on("connected") {(dataArr, ack) -> Void in
                 let is_connected = dataArr[0] as! String
                 if (is_connected == "CONNECTED"){
-                    print("THIS USER IS CONNECTED: ", self.curr_username)
                     if (self.connected == false){
                         if (self.gameId != "No Game Id"){
                             var gClient_data = ""
@@ -155,10 +145,6 @@ final class GameViewModel: ObservableObject {
                 let y_index = tap_data_split[1]
                 let coin_v_index = x_index + y_index
                 if (self.curr_username == self.first){
-                    print("RECEIVING TAP AS THE FIRST PLAYER")
-                    print(self.curr_username)
-                    print(self.first)
-                    print(self.second)
                     self.coin_values[String(coin_v_index)] = GameViewModel.coin_val.Red.rawValue
                     self.sPoints = self.sPoints + 1
                     let sum = self.fPoints + self.sPoints
@@ -176,10 +162,6 @@ final class GameViewModel: ObservableObject {
                     }
                 }
                 else{
-                    print("RECEIVING TAP AS THE SECOND PLAYER")
-                    print(self.curr_username)
-                    print(self.second)
-                    print(self.first)
                     self.coin_values[String(coin_v_index)] = GameViewModel.coin_val.Blue.rawValue
                     self.fPoints = self.fPoints + 1
                     let sum = self.fPoints + self.sPoints
@@ -252,203 +234,187 @@ final class GameViewModel: ObservableObject {
                 self.disconnected()
             }
         } //from queue
-                else{
-                    if custom_game ?? true{
-                        print("IS CUSTOM GAME IN GAME VIEW")
-                        // Change this to custom game handler
-                        CustomGameHandler.sharedInstance.establishConnection()
-                        first = first_player ?? "No First"
-                        gameId = game_id ?? "No Game Id"
-                        customMSocket.on("connected") {(dataArr, ack) -> Void in
-                            let is_connected = dataArr[0] as! String
-                            if (is_connected == "CONNECTED"){
-                                print("GOT CONNECTED FROMMGAME SERVER")
-                                if (self.connected == false){
-                                    print("SELF CONNECTED IS FALSE")
-                                    if (self.gameId != "No Game Id"){
-                                        print("HAS THE GAMEID")
-                                        var gClient_data = ""
-                                        if (self.is_first ?? false){
-                                            gClient_data = self.gameId + "|" + (self.first_player ?? "Nothing") + "|1"
-                                        }
-                                        else{
-                                            gClient_data = self.gameId + "|" + (self.second_player ?? "Nothing") + "|2"
-                                        }
-                                        print("EMITTING TO THE GAME SERVER")
-                                        self.customMSocket.emit("GAMEID", gClient_data)
-                                        self.connected = true
-                                    }
-                                }
-                            }
-                        }
-                        customMSocket.on("GAMEID") {(dataArr, ack) -> Void in
-                            let game_id_response = dataArr[0] as! String
-                            if (game_id_response == "SUCCESS"){
-                                print("GAMEID IS A SUCCESS")
-                                self.cancelled = true
-                                self.second = self.second_player ?? "No Second"
-                                self.waitingStatus = "Opponent connected"
-                            }
-                            else{
-                                print("WAITING ON OPPONENT")
-                                self.second = "Waiting"
-                                self.waitingStatus = "Waiting on opponent ..."
-                            }
-                        } // GAMEID Handler
-        
-                        customMSocket.on("DECLINED") {(dataArr, ack) -> Void in
-                            self.waitingStatus = "Opponent declined"
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                self.cancel_game(cancelled: true)
-                            }
-                        }
-        
-                        customMSocket.on("READY") {(dataArr, ack) -> Void in
-                            let response = dataArr[0] as! String
-                            let user1_status = response.split(separator: "|")[0]
-                            let user2_status = response.split(separator: "|")[1]
-                            let ready_username = response.split(separator: "|")[2]
-                            if user1_status == "true"{
-                                if String(ready_username) == self.first_player ?? "None"{
-                                    self.fColor = CustomColorsModel().colorSchemeSix
-                                }
-                                else if String(ready_username) == self.second_player ?? "None"{
-                                    self.sColor = CustomColorsModel().colorSchemeSix
-                                }
-                                if user2_status == "true"{
-                                    self.start_game()
-                                }
-                            }
-                            else{
-                                if user2_status == "true"{
-                                    if String(ready_username) == self.second_player ?? "None"{
-                                        self.sColor = Color(.green)
-                                    }
-                                }
-                            }
-                        }
-        
-                        customMSocket.on("STARTCGAME") {(dataArr, ack) -> Void in
-                            self.ready_uped = true
-                            self.count_down()
-                        }
-        
-                        customMSocket.on("TAP") {(dataArr, ack) -> Void in
-                            let tap_data = dataArr[0] as! String
-                            let tap_data_split = tap_data.split(separator: "|")
-                            let x_index = tap_data_split[0]
-                            let y_index = tap_data_split[1]
-                            let coin_v_index = x_index + y_index
-                            if (self.curr_username == self.first){
-                                self.coin_values[String(coin_v_index)] = GameViewModel.coin_val.Red.rawValue
-                                self.sPoints = self.sPoints + 1
-                                let sum = self.fPoints + self.sPoints
-                                if (sum == 35){
-                                    if (self.fPoints > self.sPoints){
-                                        self.endGame = true
-                                        self.winner = self.first
-                                    }
-                                    else{
-                                        self.endGame = true
-                                        self.winner = self.second
-                                    }
-                                }
-                            }
-                            else{
-                                self.coin_values[String(coin_v_index)] = GameViewModel.coin_val.Blue.rawValue
-                                self.fPoints = self.fPoints + 1
-                                let sum = self.fPoints + self.sPoints
-                                if (sum == 35){
-                                    if (self.fPoints > self.sPoints){
-                                        self.endGame = true
-                                        self.winner = self.first
-                                    }
-                                    else{
-                                        self.endGame = true
-                                        self.winner = self.second
-                                    }
-                                }
-                            }
-                        }
-                        customMSocket.on("PLAYAGAIN") {(dataArr, ack) -> Void in
-                            let data = dataArr[0] as! String
-                            self.paVotes += 1
-                            if self.paVotes == 2{
-                                var dict = [String:String]()
-                                for (key,_) in self.coin_values{
-                                    dict[key] = "Custom_Color_1_TC"
-                                }
-                                self.coin_values = dict
-                                self.gameStart = "READY"
-                                self.startGame = false
-                                self.fPoints = 0
-                                self.sPoints = 0
-                                self.endGame = false
-                                self.paVotes = 0
-                                self.count = 10
-                                self.paPressed = false
-                                self.currPaPressed = false
-                                self.time_is_up = false
-                                self.count_down()
-                            }
-                            else{
-                                if data == self.curr_username{
-                                    self.waitingStatus = "Waiting on opponent ..."
-                                    self.paPressed = true
-                                    self.currPaPressed = true
+        else{
+            if custom_game ?? true{
+                CustomGameHandler.sharedInstance.establishConnection()
+                first = first_player ?? "No First"
+                gameId = game_id ?? "No Game Id"
+                customMSocket.on("connected") {(dataArr, ack) -> Void in
+                    let is_connected = dataArr[0] as! String
+                    if (is_connected == "CONNECTED"){
+                        if (self.connected == false){
+                            if (self.gameId != "No Game Id"){
+                                var gClient_data = ""
+                                if (self.is_first ?? false){
+                                    gClient_data = self.gameId + "|" + (self.first_player ?? "Nothing") + "|1"
                                 }
                                 else{
-                                    self.waitingStatus = data + " voted play again"
-                                    self.paPressed = true
+                                    gClient_data = self.gameId + "|" + (self.second_player ?? "Nothing") + "|2"
                                 }
+                                self.customMSocket.emit("GAMEID", gClient_data)
+                                self.connected = true
                             }
-                        }
-        
-                        customMSocket.on("OPPLEFT") {(dataArr, ack) -> Void in
-                            let data = dataArr[0] as! String
-                            self.oppLeft = true
-                            self.paPressed = true
-                            self.currPaPressed = true
-                            self.waitingStatus = data + " has left"
-                        }
-        
-                        customMSocket.on("CANCELLED") {(dataArr, ack) -> Void in
-                            self.waitingStatus = "Opponent disconnected"
-                            self.paPressed = true
-                            self.currPaPressed = true
-                        }
-        
-                        // Look into this for both custom game and regular game
-                        customMSocket.on("REMOVEDUSER") {(dataArr, ack) -> Void in
-                            let value = dataArr[0] as! String
-                            if value == "HOME"{
-                                CustomGameHandler.sharedInstance.closeConnection()
-                                self.in_game = false
-                            }
-                            else if value == "EXIT"{
-                                CustomGameHandler.sharedInstance.closeConnection()
-                                self.in_game = false
-                            }
-                        }
-        
-                        customMSocket.on("DISCONNECT") {(dataArr, ack) -> Void in
-                            self.disconnected()
                         }
                     }
                 }
-    }
-//        if UIScreen.main.bounds.height < 750.0{
-//            smaller_screen = true
-//        }
+                customMSocket.on("GAMEID") {(dataArr, ack) -> Void in
+                    let game_id_response = dataArr[0] as! String
+                    if (game_id_response == "SUCCESS"){
+                        self.cancelled = true
+                        self.second = self.second_player ?? "No Second"
+                        self.waitingStatus = "Opponent connected"
+                    }
+                    else{
+                        self.second = "Waiting"
+                        self.waitingStatus = "Waiting on opponent ..."
+                    }
+                } // GAMEID Handler
 
-//    } //init
-//
+                customMSocket.on("DECLINED") {(dataArr, ack) -> Void in
+                    self.waitingStatus = "Opponent declined"
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        self.cancel_game(cancelled: true)
+                    }
+                }
+
+                customMSocket.on("READY") {(dataArr, ack) -> Void in
+                    let response = dataArr[0] as! String
+                    let user1_status = response.split(separator: "|")[0]
+                    let user2_status = response.split(separator: "|")[1]
+                    let ready_username = response.split(separator: "|")[2]
+                    if user1_status == "true"{
+                        if String(ready_username) == self.first_player ?? "None"{
+                            self.fColor = CustomColorsModel().colorSchemeSix
+                        }
+                        else if String(ready_username) == self.second_player ?? "None"{
+                            self.sColor = CustomColorsModel().colorSchemeSix
+                        }
+                        if user2_status == "true"{
+                            self.start_game()
+                        }
+                    }
+                    else{
+                        if user2_status == "true"{
+                            if String(ready_username) == self.second_player ?? "None"{
+                                self.sColor = Color(.green)
+                            }
+                        }
+                    }
+                }
+
+                customMSocket.on("STARTCGAME") {(dataArr, ack) -> Void in
+                    self.ready_uped = true
+                    self.count_down()
+                }
+
+                customMSocket.on("TAP") {(dataArr, ack) -> Void in
+                    let tap_data = dataArr[0] as! String
+                    let tap_data_split = tap_data.split(separator: "|")
+                    let x_index = tap_data_split[0]
+                    let y_index = tap_data_split[1]
+                    let coin_v_index = x_index + y_index
+                    if (self.curr_username == self.first){
+                        self.coin_values[String(coin_v_index)] = GameViewModel.coin_val.Red.rawValue
+                        self.sPoints = self.sPoints + 1
+                        let sum = self.fPoints + self.sPoints
+                        if (sum == 35){
+                            if (self.fPoints > self.sPoints){
+                                self.endGame = true
+                                self.winner = self.first
+                            }
+                            else{
+                                self.endGame = true
+                                self.winner = self.second
+                            }
+                        }
+                    }
+                    else{
+                        self.coin_values[String(coin_v_index)] = GameViewModel.coin_val.Blue.rawValue
+                        self.fPoints = self.fPoints + 1
+                        let sum = self.fPoints + self.sPoints
+                        if (sum == 35){
+                            if (self.fPoints > self.sPoints){
+                                self.endGame = true
+                                self.winner = self.first
+                            }
+                            else{
+                                self.endGame = true
+                                self.winner = self.second
+                            }
+                        }
+                    }
+                }
+                customMSocket.on("PLAYAGAIN") {(dataArr, ack) -> Void in
+                    let data = dataArr[0] as! String
+                    self.paVotes += 1
+                    if self.paVotes == 2{
+                        var dict = [String:String]()
+                        for (key,_) in self.coin_values{
+                            dict[key] = "Custom_Color_1_TC"
+                        }
+                        self.coin_values = dict
+                        self.gameStart = "READY"
+                        self.startGame = false
+                        self.fPoints = 0
+                        self.sPoints = 0
+                        self.endGame = false
+                        self.paVotes = 0
+                        self.count = 10
+                        self.paPressed = false
+                        self.currPaPressed = false
+                        self.time_is_up = false
+                        self.count_down()
+                    }
+                    else{
+                        if data == self.curr_username{
+                            self.waitingStatus = "Waiting on opponent ..."
+                            self.paPressed = true
+                            self.currPaPressed = true
+                        }
+                        else{
+                            self.waitingStatus = data + " voted play again"
+                            self.paPressed = true
+                        }
+                    }
+                }
+
+                customMSocket.on("OPPLEFT") {(dataArr, ack) -> Void in
+                    let data = dataArr[0] as! String
+                    self.oppLeft = true
+                    self.paPressed = true
+                    self.currPaPressed = true
+                    self.waitingStatus = data + " has left"
+                }
+
+                customMSocket.on("CANCELLED") {(dataArr, ack) -> Void in
+                    self.waitingStatus = "Opponent disconnected"
+                    self.paPressed = true
+                    self.currPaPressed = true
+                }
+                customMSocket.on("REMOVEDUSER") {(dataArr, ack) -> Void in
+                    let value = dataArr[0] as! String
+                    if value == "HOME"{
+                        CustomGameHandler.sharedInstance.closeConnection()
+                        self.in_game = false
+                    }
+                    else if value == "EXIT"{
+                        CustomGameHandler.sharedInstance.closeConnection()
+                        self.in_game = false
+                    }
+                }
+
+                customMSocket.on("DISCONNECT") {(dataArr, ack) -> Void in
+                    self.disconnected()
+                }
+            }
+        }
+    }
     deinit {
         GameHandler.sharedInstance.closeConnection()
         CustomGameHandler.sharedInstance.closeConnection()
         in_game = false
     }
-//
+    
     func start_game(){
         if (self.custom_game ?? false){
             customMSocket.emit("STARTCGAME", game_id ?? "No ID")
@@ -500,7 +466,6 @@ final class GameViewModel: ObservableObject {
             mSocket.emit("TAP", index_str)
         }
         if (curr_username == first){
-            print("IS THE FIRST PLAYER TAPPING FOR THEMSELVES")
             coin_values[String(coin_v_index)] = GameViewModel.coin_val.Blue.rawValue
             fPoints = fPoints + 1
             let sum = fPoints + sPoints
@@ -518,7 +483,6 @@ final class GameViewModel: ObservableObject {
             }
         }
         else{
-            print("IS THE SECOND PLAYER TAPPING FOR THEMSELVES")
             coin_values[String(coin_v_index)] = GameViewModel.coin_val.Red.rawValue
             sPoints = sPoints + 1
             let sum = fPoints + sPoints
@@ -540,7 +504,6 @@ final class GameViewModel: ObservableObject {
     func send_points(location:String){
         gameStart = "END"
         if self.got_in_send_points{
-            print("RETURNING OUT OF SEND POINTS")
             return
         }
         self.got_in_send_points = true
@@ -552,6 +515,7 @@ final class GameViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/game/sendPoints"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/game/sendPoints"
         }
         
@@ -559,8 +523,6 @@ final class GameViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
-        
         var _type:String = ""
         var is_winner:Bool = false
         
@@ -615,6 +577,7 @@ final class GameViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/ad_invite"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/ad_invite"
         }
         
@@ -622,8 +585,6 @@ final class GameViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
-        
         guard let session = logged_in_user else{
             return
         }

@@ -7,8 +7,6 @@
 
 import Foundation
 import SwiftUI
-//import CloudKit
-//import metamask_ios_sdk
 
 final class SettingsViewModel: ObservableObject {
     @AppStorage("session") var logged_in_user: String?
@@ -22,14 +20,12 @@ final class SettingsViewModel: ObservableObject {
     @Published var smaller_screen:Bool = false
     @Published var userModel:UserViewModel?
     @Published var show_logout_option:Bool = false
-//    @StateObject public var metaMaskRepo = MetaMaskRepo()
     @Published var clicked_metamask_connect: Bool = false
     @Published var got_the_users_wallet: Bool = false
     @Published var users_address: String = ""
     @Published var pressed_get_wallet:Bool = false
     
     init(){
-        print("IN THE SETTINGS INIT")
         self.userModel = UserViewModel(self.userViewModel ?? Data())
         if UIScreen.main.bounds.height < 750.0{
             smaller_screen = true
@@ -40,7 +36,6 @@ final class SettingsViewModel: ObservableObject {
     }
     
     func getWallet() {
-        print("IN GET WALLET FUNCTION")
         pressed_get_wallet = true
         var usersAddress = "None"
         guard let session = logged_in_user else{
@@ -54,7 +49,6 @@ final class SettingsViewModel: ObservableObject {
         }
         
         if usersAddress == "None"{
-            print("IT IS NONE")
             return
         }
         
@@ -65,6 +59,7 @@ final class SettingsViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/tapcoinsbc/saveWallet"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/tapcoinsbc/saveWallet"
         }
         
@@ -89,25 +84,19 @@ final class SettingsViewModel: ObservableObject {
             guard let data = data, error == nil else {
                 return
             }
-
             DispatchQueue.main.async {
                 do {
                     let response = try JSONDecoder().decode(Response.self, from: data)
-                    print("RESPONSE IS BELOW")
-                    print(response)
                     self?.got_the_users_wallet = true
-                    print(usersAddress)
                     self?.users_address = response.response
                     self?.wallet_added = true
                     self?.userModel?.has_wallet = true
                     self?.userViewModel = self?.userModel?.storageValue
-//                            self?.in_game = false
                 }
                 catch{
                     print("SOMETHING WENT WRONG HERE")
                 }
             }
-
         })
         task.resume()
     }
@@ -126,6 +115,7 @@ final class SettingsViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/user/logout"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/user/logout"
         }
         
@@ -148,7 +138,6 @@ final class SettingsViewModel: ObservableObject {
             guard let data = data, error == nil else {
                 return
             }
-
             do {
                 let response = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
                 DispatchQueue.main.async {
@@ -162,6 +151,4 @@ final class SettingsViewModel: ObservableObject {
         })
         task.resume()
     }
-    
-
 }

@@ -103,9 +103,6 @@ struct AccountInformationView: View {
                     .foregroundColor(newCustomColorsModel.colorSchemeFour)
                     .offset(y: UIScreen.main.bounds.height * 0.31)
             }
-//            if viewModel.show_security_questions ?? false{
-//                SecurityQuestionsComponentView(is_settings:true)
-//            }
         } // ZStack
     }
 }

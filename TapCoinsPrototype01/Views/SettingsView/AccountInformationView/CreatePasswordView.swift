@@ -99,11 +99,8 @@ struct CreatePasswordView: View {
                     }
                     .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.25, alignment: .center)
                     .padding(3)
-                    
                 }
             }
-            
         } // ZStack
     }
-
 }

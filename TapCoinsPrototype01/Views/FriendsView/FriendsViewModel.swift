@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-//import CloudKit
+
 final class FriendsViewModel: ObservableObject {
     @AppStorage("session") var logged_in_user: String?
     @AppStorage("Player1") var first_player: String?
@@ -32,21 +32,13 @@ final class FriendsViewModel: ObservableObject {
     @Published var pressed_decline_invite:Bool = false
     @Published var pressed_remove_friend:Bool = false
     @Published var pressed_send_invite:Bool = false
-//    private var mSocket = CustomGameHandler.sharedInstance.getSocket()
     private var first_time:Bool = true
     private var globalFunctions = GlobalFunctions()
     @Published var friends_indexes:[Int:Bool] = [:]
     
     init(){
-        print("IN THE FRIENDS VIEW INIT")
-//        self.call_get_user()
         self.userModel = UserViewModel(self.userViewModel ?? Data())
-//        self.friend_logic()
-//        CustomGameHandler.sharedInstance.establishConnection()
-//        print("ESTABLISHED CONNECTION")
         set_friend_indexes()
-        print("FRIENDS LIST BELOW")
-        print(userModel?.friends)
     }
     
     func set_friend_indexes(){
@@ -54,20 +46,14 @@ final class FriendsViewModel: ObservableObject {
         friends_indexes = [:]
         for friend in self.userModel?.friends ?? ["NO FRIENDS"] {
             if friend == "NO FRIENDS"{
-                print("HAS NO FRIENDS")
                 return
             }
-            print(friend)
-            print(index)
             friends_indexes[index] = false
             index += 1
         }
-        print("FRIEND INDEXES BELOW")
-        print(friends_indexes)
     }
     
     func friend_logic(){
-        print("BEGINNING OF FRIENDS LOGIC")
         var tempUserModelData = UserViewModel(self.userViewModel ?? Data())
         if tempUserModelData?.friends?.count ?? 0 > 0{
             if tempUserModelData?.friends?[0] == "0"{
@@ -106,7 +92,6 @@ final class FriendsViewModel: ObservableObject {
             tempUserModelData?.numFriends = 0
             tempUserModelData?.fArrayCount = 0
         }
-        print("END OF FRIENDS LOGIC")
     }
     
     func sortFriends(user: UserViewModel) -> Array<String>{
@@ -139,10 +124,6 @@ final class FriendsViewModel: ObservableObject {
         pressed_decline_request = true
         let rNameSplit = requestName.split(separator: " ")
         let rUsername = rNameSplit[3]
-        print("FRIENDS LIST")
-        print(self.userModel?.friends)
-        print("REQUESTNAME BELOW")
-        print(requestName)
         
         var url_string:String = ""
         
@@ -151,6 +132,7 @@ final class FriendsViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/dfr"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/dfr"
         }
         
@@ -158,8 +140,6 @@ final class FriendsViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
-        
         guard let session = logged_in_user else{
             return
         }
@@ -189,9 +169,6 @@ final class FriendsViewModel: ObservableObject {
                             index += 1
                         }
                         self?.pressed_decline_request = false
-                        // Adjust get user call here
-//                        self?.call_get_user()
-//                        self?.friend_logic()
                     }
                 }
             }
@@ -223,6 +200,7 @@ final class FriendsViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/afr"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/afr"
         }
         
@@ -230,8 +208,6 @@ final class FriendsViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
-        
         guard let session = logged_in_user else{
             return
         }
@@ -260,10 +236,6 @@ final class FriendsViewModel: ObservableObject {
                             index += 1
                         }
                         self?.pressed_accept_request = false
-                        // Adjust get user call here
-//                        self?.call_get_user()
-//                        self?.userViewModel = self?.userModel.storageValue
-//                        self?.friend_logic()
                     }
                 }
                 
@@ -278,16 +250,6 @@ final class FriendsViewModel: ObservableObject {
     struct AResponse:Codable {
         let result: String
     }
-    
-//    struct FRModel:Hashable{
-//        let sender:String
-//        let receiver:String
-//        let record:CKRecord
-//    }
-//    
-//    func addOperation(operation:CKDatabaseOperation){
-//        CKContainer(identifier: "iCloud.com.ericviera.TapTapCoin").publicCloudDatabase.add(operation)
-//    }
     
     func removeFriend(requestName:String){
         pressed_remove_friend = true
@@ -305,6 +267,7 @@ final class FriendsViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/remove_friend"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/remove_friend"
         }
         
@@ -312,8 +275,6 @@ final class FriendsViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
-        
         guard let session = logged_in_user else{
             return
         }
@@ -335,11 +296,10 @@ final class FriendsViewModel: ObservableObject {
                 if response.result == "Removed"{
                     DispatchQueue.main.async {
                         var ecount = 0;
-                        var friendsList = self?.userModel?.friends ?? ["NO FRIENDS"]
+                        let friendsList = self?.userModel?.friends ?? ["NO FRIENDS"]
                         if friendsList[0] != "NO FRIENDS"{
-                            for friendIndex in friendsList.indices ?? 5..<7{
+                            for friendIndex in friendsList.indices {
                                 if ecount == 0 && friendIndex == 5{
-                                    print("SOMETHING WENT WRONG WITH THE FRIEND INDICES")
                                     break
                                 }
                                 if friendsList[friendIndex] == requestName{
@@ -347,11 +307,6 @@ final class FriendsViewModel: ObservableObject {
                                 }
                                 ecount+=1
                             }
-                            // Adjust get user call here
-//                            self?.call_get_user()
-//                            self?.friend_logic()
-//                            // save data in appstorage
-//                            self?.userViewModel = self?.userModel.storageValue
                         }
                         
                     }
@@ -378,6 +333,7 @@ final class FriendsViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/send_invite"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/send_invite"
         }
         
@@ -385,8 +341,6 @@ final class FriendsViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
-        
         guard let session = logged_in_user else{
             return
         }
@@ -405,7 +359,6 @@ final class FriendsViewModel: ObservableObject {
             do {
                 let response = try JSONDecoder().decode(CGResponse.self, from: data)
                 if response.first != "ALREADY EXISTS"{
-//                    CustomGameHandler.sharedInstance.closeConnection()
                     DispatchQueue.main.async {
                         self?.first_player = response.first
                         self?.second_player = response.second
@@ -415,14 +368,6 @@ final class FriendsViewModel: ObservableObject {
                         self?.is_first = true
                         self?.in_game = true
                         self?.pressed_send_invite = false
-//                        if self?.userModel.is_guest == false {
-//                            self?.addFriendRequest()
-//                        }
-//                        else{
-//                            print("NO ICLOUD STATUS IS A GUEST")
-//                            self?.result = "IS A GUEST"
-//                        }
-//                        self?.addGameInvite(sender: response.first, receiver: response.second)
                     }
                 }
             }
@@ -439,22 +384,6 @@ final class FriendsViewModel: ObservableObject {
         let gameId: String
     }
     
-//    private func addGameInvite(sender:String, receiver:String){
-//        let newGameInvite = CKRecord(recordType: "GameInvite")
-//        newGameInvite["sender"] = sender
-//        newGameInvite["receiver"] = receiver
-//        saveGameInvite(record: newGameInvite)
-//    }
-//    
-//    private func saveGameInvite(record:CKRecord){
-//        CKContainer(identifier: "iCloud.com.ericviera.TapTapCoin").publicCloudDatabase.save(record) { [weak self] returnedRecord, returnedError in
-//            print("RETURNED RECORD BELOW")
-//            print(returnedRecord ?? "NOTHING HERE")
-//            print("RETURNED ERROR BELOW")
-//            print(returnedError ?? "NOTHING HERE")
-//        }
-//    }
-    
     func declineInvite(inviteName:String){
         pressed_decline_invite = true
         let rNameSplit = inviteName.split(separator: " ")
@@ -466,6 +395,7 @@ final class FriendsViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/ad_invite"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/ad_invite"
         }
         
@@ -473,8 +403,6 @@ final class FriendsViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
-        
         guard let session = logged_in_user else{
             return
         }
@@ -497,9 +425,6 @@ final class FriendsViewModel: ObservableObject {
                 if response.result == "Cancelled"{
                     DispatchQueue.main.async {
                         self?.pressed_decline_invite = false
-//                        self?.mSocket.emit("DECLINED", response.gameId)
-                        // Adjust get user call here
-//                        self?.call_get_user()
                     }
                 }
             }
@@ -526,6 +451,7 @@ final class FriendsViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/friend/ad_invite"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/friend/ad_invite"
         }
         
@@ -533,8 +459,6 @@ final class FriendsViewModel: ObservableObject {
             return
         }
         var request = URLRequest(url: url)
-        //        if let environment = ProcessInfo.processInfo.environment["login"], let url = URL(string: environment){
-        
         guard let session = logged_in_user else{
             return
         }
@@ -554,7 +478,6 @@ final class FriendsViewModel: ObservableObject {
             do {
                 let response = try JSONDecoder().decode(AIResponse.self, from: data)
                 if response.result == "Accepted"{
-//                    CustomGameHandler.sharedInstance.closeConnection()
                     DispatchQueue.main.async {
                         var index = 0
                         for friend in self?.userModel?.friends ?? ["NO FRIENDS"]{
@@ -591,82 +514,10 @@ final class FriendsViewModel: ObservableObject {
         let gameId: String
     }
     
-//    struct GIModel:Hashable{
-//        let sender:String
-//        let receiver:String
-//        let record:CKRecord
-//    }
-//    
-//    func findGameInvite(giSender:String){
-////        let predicate = NSPredicate(value: true)
-//        let predicate = NSPredicate(format: "receiver = %@", argumentArray: [self.userModel?.username])
-//        let query = CKQuery(recordType: "GameInvite", predicate: predicate)
-//        let queryOperation = CKQueryOperation(query: query)
-//        
-//        var gameInvites: [GIModel] = []
-//        
-//        if #available(iOS 15.0, *){
-//            queryOperation.recordMatchedBlock = { (returnedRecordID, returnedResult) in
-//                switch returnedResult{
-//                case .success(let record):
-//                    //logic here
-//                    let sender = record["sender"] as? String
-//                    let receiver = record["receiver"] as? String
-//                    gameInvites.append(GIModel(sender: sender ?? "Null", receiver: receiver ?? "Null", record: record))
-//                    break
-//                case .failure(let error):
-//                    print("ERROR recordMatchBlock: \(error)")
-//                }
-//            }
-//        }
-//        else{
-//            queryOperation.recordFetchedBlock = { (returnedRecord) in
-//                //logic here
-//                let sender = returnedRecord["sender"] as? String
-//                let receiver = returnedRecord["receiver"] as? String
-//                gameInvites.append(GIModel(sender: sender ?? "Null", receiver: receiver ?? "Null", record: returnedRecord))
-//            }
-//        }
-//        
-//        
-//        if #available(iOS 15.0, *) {
-//            queryOperation.queryResultBlock = { [weak self] returnedResult in
-//                for gi in gameInvites{
-//                    if gi.sender == giSender{
-//                        self?.deleteGameInvite(record:gi.record)
-//                    }
-//                }
-//            }
-//        }
-//        else{
-//            queryOperation.queryCompletionBlock = { [weak self] (returnedCursor, returnedError) in
-//                for gi in gameInvites{
-//                    if gi.sender == giSender{
-//                        self?.deleteGameInvite(record:gi.record)
-//                    }
-//                }
-//            }
-//        }
-//        addOperation(operation: queryOperation)
-//    }
-//    
-//    func deleteGameInvite(record:CKRecord){
-//        CKContainer(identifier: "iCloud.com.ericviera.TapTapCoin").publicCloudDatabase.delete(withRecordID: record.recordID) { returnedRecordID, returnedError in
-//            print("IN DELETE GAME INVITE COMPLETION")
-//            print(returnedRecordID)
-//            print(returnedError)
-//        }
-//    }
-    
     func call_get_user(){
-        print("IN THE GET USER CALL")
         DispatchQueue.main.async { [weak self] in
             self?.globalFunctions.getUser(token:self?.logged_in_user ?? "None", this_user:nil, curr_user:nil)
         }
-//        DispatchQueue.main.async { [weak self] in
-//            self?.userModel = UserViewModel(self?.userViewModel ?? Data())
-//        }
-        
     }
     
     func show_hide_friend_request_actions(index:String){
@@ -675,10 +526,7 @@ final class FriendsViewModel: ObservableObject {
     }
     
     func show_hide_friend_actions(index:Int, friend:String){
-        print("IN SHOW HIDE FRIENDS ACTION")
         friends_indexes[index] = !(friends_indexes[index] ?? false)
-        print(friends_indexes[index])
-//        show_friend_actions_bool = !show_friend_actions_bool
         friend_name = friend
     }
  }

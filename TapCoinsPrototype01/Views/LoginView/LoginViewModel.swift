@@ -7,9 +7,6 @@
 
 import Foundation
 import SwiftUI
-//#if canImport(FoundationNetworking)
-//import FoundationNetworking
-//#endif
 
 final class LoginViewModel: ObservableObject {
     @AppStorage("session") var logged_in_user: String?
@@ -61,7 +58,6 @@ final class LoginViewModel: ObservableObject {
                     let response = try JSONDecoder().decode(Response.self, from: data)
                     self?.logged_in_user = response.token
                     self?.show_security_questions = false
-//                    self?.in_game = false
                 }
                 catch{
                     do{
