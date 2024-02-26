@@ -165,12 +165,12 @@ struct HomeView: View {
                         Text("Pass")
                             .frame(width: UIScreen.main.bounds.width * 0.1, height: UIScreen.main.bounds.height * 0.04, alignment: .center)
                             .background(newCustomColorsModel.customColor_1)
-                            .foregroundColor(newCustomColorsModel.customColor_2)
+                            .foregroundColor(newCustomColorsModel.colorSchemeThree)
                             .fontWeight(.bold)
                             .cornerRadius(8)
                     }).padding()
                 }
-                .background(newCustomColorsModel.customColor_2)
+                .background(newCustomColorsModel.colorSchemeThree)
             }
             if show_security_questions ?? true{
                 if viewModel.userModel?.is_guest == false{
