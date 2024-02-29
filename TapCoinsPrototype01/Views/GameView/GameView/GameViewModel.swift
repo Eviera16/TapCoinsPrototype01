@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import zlib
+import SocketIO
 
 final class GameViewModel: ObservableObject {
     @AppStorage("session") var logged_in_user: String?
@@ -108,20 +109,22 @@ final class GameViewModel: ObservableObject {
             first = first_player ?? "No First"
             second = second_player ?? "No Second"
             gameId = game_id ?? "No Game Id"
-            mSocket.on("connected") {(dataArr, ack) -> Void in
-                let is_connected = dataArr[0] as! String
-                if (is_connected == "CONNECTED"){
-                    if (self.connected == false){
-                        if (self.gameId != "No Game Id"){
-                            var gClient_data = ""
-                            if (self.is_first ?? false){
-                                gClient_data = self.gameId + "|" + self.first + "|1"
-                            }
-                            else{
-                                gClient_data = self.gameId + "|" + self.second + "|2"
-                            }
-                            self.mSocket.emit("GAMEID", gClient_data)
+            mSocket.on("statusChange") {(dataArr, ack) -> Void in
+                if self.connected == false{
+                    if dataArr.count == 2{
+                        let eventName = dataArr[0]
+                        if eventName as! SocketIOStatus == SocketIOStatus.connected{
                             self.connected = true
+                            if (self.gameId != "No Game Id"){
+                                var gClient_data = ""
+                                if (self.is_first ?? false){
+                                    gClient_data = self.gameId + "|" + self.first + "|1"
+                                }
+                                else{
+                                    gClient_data = self.gameId + "|" + self.second + "|2"
+                                }
+                                self.mSocket.emit("game_id", gClient_data)
+                            }
                         }
                     }
                 }
@@ -201,19 +204,19 @@ final class GameViewModel: ObservableObject {
                 let user1_status = response.split(separator: "|")[0]
                 let user2_status = response.split(separator: "|")[1]
                 let ready_username = response.split(separator: "|")[2]
-                if user1_status == "true"{
+                if user1_status == "True"{
                     if String(ready_username) == self.first_player ?? "None"{
                         self.fColor = CustomColorsModel().colorSchemeSix
                     }
                     else if String(ready_username) == self.second_player ?? "None"{
                         self.sColor = CustomColorsModel().colorSchemeSix
                     }
-                    if user2_status == "true"{
+                    if user2_status == "True"{
                         self.start_game()
                     }
                 }
                 else{
-                    if user2_status == "true"{
+                    if user2_status == "True"{
                         if String(ready_username) == self.second_player ?? "None"{
                             self.sColor = Color(.green)
                         }
@@ -238,21 +241,24 @@ final class GameViewModel: ObservableObject {
             if custom_game ?? true{
                 CustomGameHandler.sharedInstance.establishConnection()
                 first = first_player ?? "No First"
+                second = second_player ?? "No Second"
                 gameId = game_id ?? "No Game Id"
-                customMSocket.on("connected") {(dataArr, ack) -> Void in
-                    let is_connected = dataArr[0] as! String
-                    if (is_connected == "CONNECTED"){
-                        if (self.connected == false){
-                            if (self.gameId != "No Game Id"){
-                                var gClient_data = ""
-                                if (self.is_first ?? false){
-                                    gClient_data = self.gameId + "|" + (self.first_player ?? "Nothing") + "|1"
-                                }
-                                else{
-                                    gClient_data = self.gameId + "|" + (self.second_player ?? "Nothing") + "|2"
-                                }
-                                self.customMSocket.emit("GAMEID", gClient_data)
+                customMSocket.on("statusChange") {(dataArr, ack) -> Void in
+                    if self.connected == false{
+                        if dataArr.count == 2{
+                            let eventName = dataArr[0]
+                            if eventName as! SocketIOStatus == SocketIOStatus.connected{
                                 self.connected = true
+                                if (self.gameId != "No Game Id"){
+                                    var gClient_data = ""
+                                    if (self.is_first ?? false){
+                                        gClient_data = self.gameId + "|" + self.first + "|1"
+                                    }
+                                    else{
+                                        gClient_data = self.gameId + "|" + self.second + "|2"
+                                    }
+                                    self.customMSocket.emit("game_id", gClient_data)
+                                }
                             }
                         }
                     }
@@ -282,19 +288,19 @@ final class GameViewModel: ObservableObject {
                     let user1_status = response.split(separator: "|")[0]
                     let user2_status = response.split(separator: "|")[1]
                     let ready_username = response.split(separator: "|")[2]
-                    if user1_status == "true"{
+                    if user1_status == "True"{
                         if String(ready_username) == self.first_player ?? "None"{
                             self.fColor = CustomColorsModel().colorSchemeSix
                         }
                         else if String(ready_username) == self.second_player ?? "None"{
                             self.sColor = CustomColorsModel().colorSchemeSix
                         }
-                        if user2_status == "true"{
+                        if user2_status == "True"{
                             self.start_game()
                         }
                     }
                     else{
-                        if user2_status == "true"{
+                        if user2_status == "True"{
                             if String(ready_username) == self.second_player ?? "None"{
                                 self.sColor = Color(.green)
                             }
@@ -417,10 +423,10 @@ final class GameViewModel: ObservableObject {
     
     func start_game(){
         if (self.custom_game ?? false){
-            customMSocket.emit("STARTCGAME", game_id ?? "No ID")
+            customMSocket.emit("start_game", game_id ?? "No ID")
         }
         else{
-            mSocket.emit("STARTCGAME", game_id ?? "No ID")
+            mSocket.emit("start_game", game_id ?? "No ID")
         }
     }
     
@@ -440,10 +446,10 @@ final class GameViewModel: ObservableObject {
     
     func ready_up(username:String){
         if (self.custom_game ?? false){
-            customMSocket.emit("READY", username + "|" + (game_id ?? "NO ID"))
+            customMSocket.emit("ready", username + "|" + (game_id ?? "NO ID"))
         }
         else{
-            mSocket.emit("READY", username + "|" + (game_id ?? "NO ID"))
+            mSocket.emit("ready", username + "|" + (game_id ?? "NO ID"))
         }
         ready = true
         if username == first_player{
@@ -460,10 +466,10 @@ final class GameViewModel: ObservableObject {
         let coin_v_index = x_index + y_index
         let index_str = String(x) + "|" + String(y) + "*" + gameId
         if (self.custom_game ?? false){
-            customMSocket.emit("TAP", index_str)
+            customMSocket.emit("tap", index_str)
         }
         else{
-            mSocket.emit("TAP", index_str)
+            mSocket.emit("tap", index_str)
         }
         if (curr_username == first){
             coin_values[String(coin_v_index)] = GameViewModel.coin_val.Blue.rawValue
@@ -633,10 +639,10 @@ final class GameViewModel: ObservableObject {
 
     func play_again(){
         if (self.custom_game ?? false){
-            self.customMSocket.emit("PLAYAGAIN", curr_username + "|" + (game_id ?? "NO ID"))
+            self.customMSocket.emit("play_again", curr_username + "|" + (game_id ?? "NO ID"))
         }
         else{
-            self.mSocket.emit("PLAYAGAIN", curr_username + "|" + (game_id ?? "NO ID"))
+            self.mSocket.emit("play_again", curr_username + "|" + (game_id ?? "NO ID"))
         }
         paPressed = true
         currPaPressed = true
@@ -646,29 +652,29 @@ final class GameViewModel: ObservableObject {
         if custom_game ?? false{
             if !oppLeft{
                 oppLeft = true
-                customMSocket.emit("OPPLEFT", curr_username + "|" + (game_id ?? "NO ID"))
-                customMSocket.emit("REMOVEGAMECLIENT", "HOME|" + (game_id ?? "NO ID"))
+                customMSocket.emit("opponent_left", curr_username + "|" + (game_id ?? "NO ID"))
+                customMSocket.emit("remove_game_client", "HOME|" + (game_id ?? "NO ID"))
             }
             else{
-                customMSocket.emit("REMOVEGAMECLIENT", "HOME|" + (game_id ?? "NO ID"))
+                customMSocket.emit("remove_game_client", "HOME|" + (game_id ?? "NO ID"))
             }
         }
         else{
             if exit{
-                mSocket.emit("REMOVEGAMECLIENT", "EXIT|" + (game_id ?? "NO ID"))
+                mSocket.emit("remove_game_client", "EXIT|" + (game_id ?? "NO ID"))
             }
             else{
-                mSocket.emit("REMOVEGAMECLIENT", "HOME|" + (game_id ?? "NO ID"))
+                mSocket.emit("remove_game_client", "HOME|" + (game_id ?? "NO ID"))
             }
         }
     }
     
     func next_game(){
         if (self.custom_game ?? false){
-            customMSocket.emit("REMOVEGAMECLIENT", "NEXT|" + (game_id ?? "NO ID"))
+            customMSocket.emit("remove_game_client", "NEXT|" + (game_id ?? "NO ID"))
         }
         else{
-            mSocket.emit("REMOVEGAMECLIENT", "NEXT|" + (game_id ?? "NO ID"))
+            mSocket.emit("remove_game_client", "NEXT|" + (game_id ?? "NO ID"))
         }
     }
     

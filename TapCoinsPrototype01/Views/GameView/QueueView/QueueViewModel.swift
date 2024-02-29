@@ -48,34 +48,33 @@ final class QueueViewModel: ObservableObject{
     
     init() {
         QueueHandler.sharedInstance.establishConnection()
-        mSocket.on("connected") {(dataArr, ack) -> Void in
-            let is_connected = dataArr[0] as! String
-            if (is_connected == "CONNECTED"){
-                if (self.connected == false){
-                    let token = self.logged_in_user ?? "None"
-                    if (token != "None"){
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            self.userModel = UserViewModel(self.userViewModel ?? Data()) ?? UserViewModel(first_name: "NO FIRST NAME", last_name: "NO LAST NAME")
-                            let data = token + "|" + String(self.userModel?.league ?? 1) + "|16|16"
-                            self.mSocket.emit("PUTINQUEUE", data)
-                            self.connected = true
-                        }
+        mSocket.on("statusChange") {data, ack in
+            if self.connected == false{
+                if data.count == 2{
+                    let eventName = data[0]
+                    if eventName as! SocketIOStatus == SocketIOStatus.connected{
+                        let token = self.logged_in_user ?? "None"
+                        if (token != "None"){
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                self.userModel = UserViewModel(self.userViewModel ?? Data()) ?? UserViewModel(first_name: "NO FIRST NAME", last_name: "NO LAST NAME")
+                                let data = token + "|" + String(self.userModel?.league ?? 1) + "|16|16"
+                                self.mSocket.emit("put_in_queue", data)
+                                self.connected = true
+                           }
+                       }
                     }
                 }
             }
         }
         mSocket.on("PUTINQUEUE") {(dataArr, ack) -> Void in
-            let in_queue = dataArr[0] as! String
-            let in_queue_arr = in_queue.split(separator: "|").map { String($0)}
-            if (in_queue_arr[0] == "SUCCESS"){
-                if (self.put_in_queue == false){
+            if (self.put_in_queue == false){
+                let data_string = dataArr[0] as! String
+                let in_queue_arr = data_string.split(separator: "|").map { String($0)}
+                if (in_queue_arr[0] == "SUCCESS"){
                     self.put_in_queue = true
                     self.loading_status = "Finding Opponent"
-                    self.queue_pop = in_queue_arr[1] + " players in queue."
+                    self.queue_pop = in_queue_arr[1] + " player(s) in queue."
                 }
-            }
-            else{
-                print("Failed to put in queue.")
             }
         }
         mSocket.on("FOUNDGAME1") {(dataArr, ack) -> Void in
@@ -92,7 +91,7 @@ final class QueueViewModel: ObservableObject{
                 }
             }
         }
-        mSocket.on("CREATE2GAME") {(dataArr, ack) -> Void in
+        mSocket.on("CREATEDGAME") {(dataArr, ack) -> Void in
             if (self.in_create2game == false){
                 self.in_create2game = true
                 let players_string = dataArr[0] as! String
@@ -103,7 +102,7 @@ final class QueueViewModel: ObservableObject{
                 self.loading_game(is_player_1: false)
             }
         }
-        mSocket.on("LEFTQUEUE") {(dataArr, ack) -> Void in
+        mSocket.on("LEFTSERVER") {(dataArr, ack) -> Void in
             QueueHandler.sharedInstance.closeConnection()
             self.in_queue = false
             self.in_game = true
@@ -200,7 +199,7 @@ final class QueueViewModel: ObservableObject{
                         let msg1 = second + "|"
                         let msg2 = (self?.player1 ?? "None") + "|" + (self?.player2 ?? "None")
                         let message = msg1 + msg2 + "|" + response.gameId
-                        self?.mSocket.emit("CREATE2GAME", message)
+                        self?.mSocket.emit("created_game", message)
                     }
                 }
                 catch{
@@ -265,7 +264,7 @@ final class QueueViewModel: ObservableObject{
                             self?.first_player = response.player1_username
                             self?.second_player = response.player2_username
                             let msg = user1Token + "|" + user2Token
-                            self?.mSocket.emit("REMOVEFROMQUEUE", msg)
+                            self?.mSocket.emit("remove_from_server", msg)
                         }
                     }
                     else{
