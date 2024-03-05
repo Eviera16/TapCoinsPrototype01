@@ -33,18 +33,18 @@ struct ToggleSettingsView: View {
                     .background(newCustomColorsModel.colorSchemeFour)
                 Spacer()
                 List{
-                    Section(header: Text(viewModel.is_guest ? "Create account to allow notifications" : "Notifications").foregroundColor(newCustomColorsModel.colorSchemeFour)){
-                        HStack{
-                            Spacer()
-                            ToggleSettingsSwitchView(toggle_setting_title: ToggleSettingTitles.NotificationsToggle, toggle_label: "Allow Notifications - ")
-                        }
-                    }
-                    Section(header: Text(viewModel.is_guest ? "Create account to allow location" : "Location").foregroundColor(newCustomColorsModel.colorSchemeFour)){
-                        HStack{
-                            Spacer()
-                            ToggleSettingsSwitchView(toggle_setting_title: ToggleSettingTitles.LocationToggle, toggle_label: "Allow Location - ")
-                        }
-                    }
+//                    Section(header: Text(viewModel.is_guest ? "Create account to allow notifications" : "Notifications").foregroundColor(newCustomColorsModel.colorSchemeFour)){
+//                        HStack{
+//                            Spacer()
+//                            ToggleSettingsSwitchView(toggle_setting_title: ToggleSettingTitles.NotificationsToggle, toggle_label: "Allow Notifications - ")
+//                        }
+//                    }
+//                    Section(header: Text(viewModel.is_guest ? "Create account to allow location" : "Location").foregroundColor(newCustomColorsModel.colorSchemeFour)){
+//                        HStack{
+//                            Spacer()
+//                            ToggleSettingsSwitchView(toggle_setting_title: ToggleSettingTitles.LocationToggle, toggle_label: "Allow Location - ")
+//                        }
+//                    }
                     Section(header: Text("Sounds").foregroundColor(newCustomColorsModel.colorSchemeFour)){
                         HStack{
                             Spacer()

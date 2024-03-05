@@ -25,6 +25,7 @@ final class QueueViewModel: ObservableObject{
     @AppStorage("user") private var userViewModel: Data?
     @AppStorage("de_queue") private var de_queue: Bool?
     @AppStorage("debug") private var debug: Bool?
+    @AppStorage("from_gq") private var from_gq: Bool?
     @Published var loading_status:String = "Loading . . ."
     @Published var queue_pop:String = "_ players in queue"
     private var found_queue:Bool = false
@@ -45,9 +46,11 @@ final class QueueViewModel: ObservableObject{
     private var queue_name:String = ""
     private var queue_count:Int = 0
     private var userModel: UserViewModel?
+    private var checked_queue:Bool = false
     
     init() {
         QueueHandler.sharedInstance.establishConnection()
+        from_gq = true
         mSocket.on("statusChange") {data, ack in
             if self.connected == false{
                 if data.count == 2{
@@ -63,6 +66,19 @@ final class QueueViewModel: ObservableObject{
                            }
                        }
                     }
+                }
+            }
+        }
+        mSocket.on("CHECKQUEUE") {dataArr, ack in
+            if self.checked_queue == false{
+                self.checked_queue = true
+                self.loading_status = "Adjusting Queue..."
+                let data_string = dataArr[0] as! String
+                let check_queue_arr = data_string.split(separator: "|").map { String($0)}
+                if check_queue_arr[0] == "Length"{
+                    self.queue_pop = check_queue_arr[1] + " player(s) in queue."
+                    self.checked_queue = false
+                    self.loading_status = "Finding Opponent"
                 }
             }
         }
@@ -302,6 +318,7 @@ final class QueueViewModel: ObservableObject{
     func return_home(){
         QueueHandler.sharedInstance.closeConnection()
         in_queue = false
+        connected = false
     }
     
     struct Response:Codable {

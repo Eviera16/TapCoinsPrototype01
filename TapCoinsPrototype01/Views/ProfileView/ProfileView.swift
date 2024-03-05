@@ -99,25 +99,6 @@ struct ProfileView: View {
                         .background(newCustomColorsModel.customColor_1)
                         .border(newCustomColorsModel.colorSchemeThree, width: UIScreen.main.bounds.width * 0.04)
                         .cornerRadius(UIScreen.main.bounds.width * 0.06)
-                    
-                    if viewModel.has_streak {
-                        HStack(alignment: .center){
-                            Spacer()
-                            VStack{
-                                Image(systemName: "hourglass")
-                                    .background(newCustomColorsModel.colorSchemeThree)
-                                    .foregroundColor(newCustomColorsModel.customColor_1)
-                                Text("You have 2 minutes to keep this streak")
-                                    .foregroundColor(newCustomColorsModel.customColor_1)
-                            }
-                            .frame(width: UIScreen.main.bounds.width * 0.35, height: UIScreen.main.bounds.height * 0.07, alignment: .center)
-                            .font(.system(size: UIScreen.main.bounds.width * 0.035))
-                            .background(newCustomColorsModel.colorSchemeThree)
-                            .cornerRadius(UIScreen.main.bounds.width * 0.02)
-                            .offset(x:UIScreen.main.bounds.width * -0.05)
-                        }
-                        .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.07)
-                    }
                     Spacer()
                     BannerAd(unitID: "ca-app-pub-3940256099942544/2934735716") // Fake Ad Unit
                     Spacer()

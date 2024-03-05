@@ -50,6 +50,7 @@ struct GameView: View {
                 }
             }
             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.06)
+            .background(darkMode ?? false ? newCustomColorsModel.colorSchemeOne : Color(.black))
             .offset(x: 0.0, y: UIScreen.main.bounds.height * -0.4)
             .padding()
             VStack(alignment: .center, spacing: viewModel.smaller_screen ? UIScreen.main.bounds.width * 0.005 : UIScreen.main.bounds.width * 0.01){

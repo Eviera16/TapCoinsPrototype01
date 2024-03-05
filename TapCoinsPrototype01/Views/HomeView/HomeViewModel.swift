@@ -23,6 +23,7 @@ final class HomeViewModel: ObservableObject {
     @AppStorage("answerHere1") var answerHere1:String?
     @AppStorage("answerHere2") var answerHere2:String?
     @AppStorage("loadedUser") var loaded_get_user:Bool?
+    @AppStorage("from_gq") private var from_gq: Bool?
     @Published var iCloudAccountError:String?
     @Published var hasiCloudAccountError:Bool?
     @Published var isSignedInToiCloud:Bool?
@@ -42,6 +43,7 @@ final class HomeViewModel: ObservableObject {
     @Published var temp_question_1:Int = 0
     @Published var temp_question_2:Int = 0
     @Published var got_security_questions:Bool = false
+    @Published var show_user_streak_pop_up:Bool = false
     public var options1:[String] = ["Loading ..."]
     public var options2:[String] = ["Loading ..."]
     private var question_1:String = ""
@@ -78,6 +80,59 @@ final class HomeViewModel: ObservableObject {
                 self?.show_security_questions = false
             }
         }
+        if from_gq ?? false{
+            start_user_streak()
+        }
+    }
+    
+    func start_user_streak(){
+        var url_string:String = ""
+        if debug ?? true{
+            print("DEBUG IS TRUE")
+            url_string = "http://127.0.0.1:8000/tapcoinsapi/game/start_user_streak"
+        }
+        else{
+            print("DEBUG IS FALSE")
+            url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/game/start_user_streak"
+        }
+        
+        guard let url = URL(string: url_string) else{
+            return
+        }
+        var request = URLRequest(url: url)
+        
+        guard let session = logged_in_user else{
+            return
+        }
+        
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: AnyHashable] = [
+            "token": session
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: .fragmentsAllowed)
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {[weak self] data, _, error in
+            guard let data = data, error == nil else {
+                return
+            }
+            DispatchQueue.main.async {
+                do {
+                    let response = try JSONDecoder().decode(StartUserStreakResponse.self, from: data)
+                    if response.response == true{
+                        self?.from_gq = false
+                        self?.show_user_streak_pop_up = true
+                    }
+                }
+                catch{
+                    print(error)
+                }
+            }
+        })
+        task.resume()
+    }
+    
+    struct StartUserStreakResponse:Codable {
+        let response: Bool
     }
     
     func get_security_questions_text(){
