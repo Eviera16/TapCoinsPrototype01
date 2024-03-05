@@ -22,6 +22,7 @@ final class GameViewModel: ObservableObject {
     @AppStorage("in_queue") var in_queue: Bool?
     @AppStorage("user") private var userViewModel: Data?
     @AppStorage("debug") private var debug: Bool?
+    @AppStorage("from_gq") private var from_gq: Bool?
     @Published var userModel: UserViewModel = UserViewModel(first_name: "NO FIRST NAME", last_name: "NO LAST NAME")
     var newCustomColorsModel = CustomColorsModel()
     @Published var coins = [true, false, true, false, true, false, true, false, true, false]
@@ -106,6 +107,7 @@ final class GameViewModel: ObservableObject {
         self.curr_username = userModel.username ?? "NO USERNAME"
         if (from_queue ?? true){
             GameHandler.sharedInstance.establishConnection()
+            from_gq = true
             first = first_player ?? "No First"
             second = second_player ?? "No Second"
             gameId = game_id ?? "No Game Id"
@@ -225,7 +227,7 @@ final class GameViewModel: ObservableObject {
             }
             
             mSocket.on("CANCELLED") {(dataArr, ack) -> Void in
-                self.waitingStatus = "Opponent disconnected"
+                self.waitingStatus = "Opponent cancelled"
             }
             
             mSocket.on("STARTCGAME") {(dataArr, ack) -> Void in
@@ -564,6 +566,7 @@ final class GameViewModel: ObservableObject {
                     let response = try JSONDecoder().decode(GameOver.self, from: data)
                     if response.gameOver == true{
                         self?.ready = false
+                        CustomGameHandler.sharedInstance.closeConnection()
                     }
                 }
                 catch{
@@ -597,10 +600,10 @@ final class GameViewModel: ObservableObject {
         
         if waitingStatus == "Opponent connected"{
             if (self.custom_game ?? false){
-                customMSocket.emit("CANCELLED", curr_username + "|" + (game_id ?? "NO ID"))
+                customMSocket.emit("cancelled", curr_username + "|" + (game_id ?? "NO ID"))
             }
             else{
-                mSocket.emit("CANCELLED", curr_username + "|" + (game_id ?? "NO ID"))
+                mSocket.emit("cancelled", curr_username + "|" + (game_id ?? "NO ID"))
             }
         }
         

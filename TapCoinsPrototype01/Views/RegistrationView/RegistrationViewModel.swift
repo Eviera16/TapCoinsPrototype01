@@ -54,6 +54,7 @@ final class RegistrationViewModel: ObservableObject {
             url_string = "http://127.0.0.1:8000/tapcoinsapi/user/register"
         }
         else{
+            print("DEBUG IS FALSE")
             url_string = "https://tapcoin1.herokuapp.com/tapcoinsapi/user/register"
         }
         

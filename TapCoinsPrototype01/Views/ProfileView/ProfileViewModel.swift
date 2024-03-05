@@ -27,15 +27,11 @@ final class ProfileViewModel: ObservableObject {
     @Published var leageForeground:Color = Color(.black)
     @Published var pressed_send_request:Bool = false
     @Published var invalid_entry:Bool = false
-    @Published var has_streak:Bool = false
     private var globalFunctions = GlobalFunctions()
     
     init(){
         let convertedData = UserViewModel(self.userViewModel ?? Data())
         self.userModel = convertedData ?? UserViewModel(first_name: "NO FIRST NAME", last_name: "NO LAST NAME")
-        if self.userModel.win_streak ?? 0 > 0 {
-            has_streak = true
-        }
         switch self.userModel.league {
         case League.NOOB.rawValue:
             league_title = "NOOB"

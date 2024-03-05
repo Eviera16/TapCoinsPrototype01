@@ -42,6 +42,8 @@ struct SecurityQuestionsComponentView: View {
                                     Picker(selection: $viewModel.question_1, label: Text("Picker1")){
                                         ForEach(0..<5) { index in
                                             Text(viewModel.got_security_questions ? viewModel.options1[index] : String(index))
+                                                .lineLimit(nil)
+                                                .fixedSize(horizontal: false, vertical: true)
                                                 .tag(index)
                                         }
                                     }
@@ -55,6 +57,8 @@ struct SecurityQuestionsComponentView: View {
                                     Picker(selection: $viewModel.question_2, label: Text("Picker2")){
                                         ForEach(0..<5) { index in
                                             Text(viewModel.got_security_questions ? viewModel.options2[index] : String(index))
+                                                .lineLimit(nil)
+                                                .fixedSize(horizontal: false, vertical: true)
                                                 .tag(index)
                                         }
                                     }
@@ -119,6 +123,8 @@ struct SecurityQuestionsComponentView: View {
                                 Picker(selection: $viewModel.question_1, label: Text("Picker1")){
                                     ForEach(0..<5) { index in
                                         Text(viewModel.got_security_questions ? viewModel.options1[index] : String(index))
+                                            .lineLimit(nil)
+                                            .fixedSize(horizontal: false, vertical: true)
                                             .tag(index)
                                     }
                                 }
@@ -132,6 +138,8 @@ struct SecurityQuestionsComponentView: View {
                                 Picker(selection: $viewModel.question_2, label: Text("Picker2")){
                                     ForEach(0..<5) { index in
                                         Text(viewModel.got_security_questions ? viewModel.options2[index] : String(index))
+                                            .lineLimit(nil)
+                                            .fixedSize(horizontal: false, vertical: true)
                                             .tag(index)
                                     }
                                 }

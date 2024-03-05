@@ -90,6 +90,38 @@ struct HomeView: View {
                         SecurityQuestionsComponentView(is_settings:false)
                     }
                 }
+                if viewModel.show_user_streak_pop_up == true{
+                    VStack(alignment: .center, spacing: UIScreen.main.bounds.width * 0.03){
+                        Image(systemName: "hourglass")
+                            .background(newCustomColorsModel.colorSchemeSix)
+                            .foregroundColor(newCustomColorsModel.colorSchemeThree)
+                            .font(.system(size: UIScreen.main.bounds.width * 0.12))
+                        VStack{
+                            Text("You have a win streak!")
+                                .foregroundColor(newCustomColorsModel.colorSchemeThree)
+                                .font(.system(size: UIScreen.main.bounds.width * 0.045))
+                            Text("You have 2 minutes before losing your streak.")
+                                .foregroundColor(newCustomColorsModel.colorSchemeThree)
+                                .font(.system(size: UIScreen.main.bounds.width * 0.038))
+                        }
+                        Button(action: {viewModel.show_user_streak_pop_up = false}, label: {
+                            HStack{
+                                Text("Close")
+                                    .foregroundColor(newCustomColorsModel.colorSchemeSix)
+                                    .font(.system(size: UIScreen.main.bounds.width * 0.04))
+                                Image(systemName: "x.square")
+                                    .background(newCustomColorsModel.colorSchemeThree)
+                                    .foregroundColor(newCustomColorsModel.colorSchemeSix)
+                                    .font(.system(size: UIScreen.main.bounds.width * 0.04))
+                            }
+                            .background(newCustomColorsModel.colorSchemeThree)
+                            .cornerRadius(UIScreen.main.bounds.width * 0.02)
+                        })
+                    }
+                    .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.16, alignment: .center)
+                    .background(newCustomColorsModel.colorSchemeSix)
+                    .cornerRadius(UIScreen.main.bounds.width * 0.02)
+                }
             }
             else{
                 ProgressView()
